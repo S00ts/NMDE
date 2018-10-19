@@ -1,0 +1,132 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[pdftex]{hyperref}
+\usepackage{amsmath,amsthm,amssymb,caption,graphicx,mathtools,hyperref,enumerate,enumitem}
+\usepackage{centernot}
+\usepackage{mdframed,cleveref}
+\usepackage{bbm}
+\usepackage{tikz-cd}
+\usepackage[makeroom]{cancel}
+
+\usepackage{multicol}
+
+\usepackage{chngcntr}
+\counterwithin{figure}{section}
+\numberwithin{equation}{section}
+
+\newtheoremstyle{break}% name
+{}%         Space above, empty = `usual value'
+{}%         Space below
+{}% Body font
+{}%         Indent amount (empty = no indent, \parindent = para indent)
+{\bfseries}% Thm head font
+{}%        Punctuation after thm head
+{\newline}% Space after thm head: \newline = linebreak
+{#1 #2 \normalfont #3}%         Thm head spec
+
+\theoremstyle{definition}
+\newtheorem*{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem*{definition}{Definition}
+
+\theoremstyle{definition}
+\newtheorem*{theorem}{Theorem}
+
+\theoremstyle{definition}
+\newtheorem*{corollary}{Corollary}
+
+\theoremstyle{break}
+\newtheorem*{example}{Example}
+
+\theoremstyle{definition}
+\newtheorem*{lemma}{Lemma}
+
+\theoremstyle{definition}
+\newtheorem*{objective}{Objective}
+
+\newmdenv[leftline=false,topline=false]{topright}
+\let\proof\relax
+\usepackage[utf8]{inputenc}
+\usetikzlibrary{positioning}
+\newcommand{\n}{\mathbb{N}}
+\newcommand{\z}{\mathbb{Z}}
+\newcommand{\q}{\mathbb{Q}}
+\newcommand{\cx}{\mathbb{C}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\divs}{\,\big|\,} %divides (a|b)
+\newcommand{\bb}[1]{\mathbb{#1}}
+\let\k\relax
+\newcommand{\k}{\mathbf{k}}
+\newcommand{\ita}[1]{\textit{#1}}
+\newcommand\inv[1]{#1^{-1}}
+\newcommand\setb[1]{\left\{#1\right\}}
+\newcommand{\vbrack}[1]{\langle #1\rangle}
+\newcommand{\determinant}[1]{\begin{vmatrix}#1\end{vmatrix}}
+\newcommand{\abs}[1]{\left\vert #1 \right\vert}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\DeclareMathOperator{\Id}{Id}
+
+
+\hypersetup{
+	colorlinks,
+	linkcolor=blue
+}
+
+\usepackage{tocloft} %table of contents package
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\newcommand{\atoc}[1]{\addtocontents{toc}{#1\par}}
+
+\setlength{\parindent}{0pt}
+
+\title{Numerical Methods for Differential Equations}
+\author{Ferran Arqué}
+\date{2018}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\atoc{\hyperref[sec:ode]{\color{black}\textbf{Ordinary Differential Equations}}}
+
+\newpage
+\section*{}\label{sec:ode}
+\vspace*{\fill}
+\hspace*{\fill}
+\huge{ORDINARY DIFFERENTIAL EQUATIONS}
+\hspace*{\fill}
+\vspace*{\fill}
+\normalsize
+\newpage
+\input{t1.tex}
+\newpage
+\input{t2.tex}
+\newpage
+\input{t3.tex}
+
+\atoc{\hyperref[sec:pde]{\-\\\color{black}\textbf{Partial Differential Equations}}}
+
+\newpage
+\section*{}\label{sec:pde}
+\vspace*{\fill}
+\hspace*{\fill}
+\huge{PARTIAL DIFFERENTIAL EQUATIONS}
+\hspace*{\fill}
+\vspace*{\fill}
+\normalsize
+\newpage
+\input{t4.tex}
+\newpage
+\input{t5.tex}
+\newpage
+\input{t6.tex}
+\newpage
+\input{t7}
+
+\end{document}
+

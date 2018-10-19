@@ -1,0 +1,38 @@
+\section{Ordinary Differential Equations. Basic concepts}
+
+\subsection{Introduction and some notation}
+
+Given $y' = f(x,y)$, where $\begin{cases} y(x) \in \real^n\\ f:\real\times\real^n \to \real^n\end{cases}$
+
+\begin{definition}
+  We denote by $y(x)$ the exact solution of the ODE system above.
+\end{definition}
+
+\begin{definition}
+  $y_k$ is the approximation of $y(x_k)$ (after $k$ steps).
+\end{definition}
+
+\begin{objective}
+  We want to approximate $y(x)$ within a given interval $[x_0, x_n]$. \\
+  \footnotesize{
+  \begin{multicols}{3}
+    We know $\begin{cases}x_0\\x_1\\x_2\\\vdots\\x_n \end{cases}$\\
+    \-\hspace{-2cm}We'd like to know $\begin{cases}y(x_0)\\y(x_1)\\y(x_2)\\\vdots \\y(x_n) \end{cases}$\\
+    \-\hspace{-2cm}We find $\begin{cases} y_0\\y_1\\y_2\\\vdots \\y_n \end{cases}$ (given by a method)
+  \end{multicols}
+  }
+\end{objective}
+\normalsize
+\begin{definition}
+  $\norm{y(x_n) - y_n}$ is the \textbf{global error}.
+\end{definition}
+
+\begin{definition}
+  We define the \textbf{local truncation error} as the error caused by one iteration, i.e. $$LTE = \norm{y(x_k) - y_k} \qquad \text{\big(assuming the \textit{localizing assumption}: $y_{k-1} = y(x_{k-1})$\big)}$$
+\end{definition}
+
+\subsection{Euler's method}
+
+\newpage
+
+\subsection{Enhanced Euler's method}
