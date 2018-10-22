@@ -55,7 +55,7 @@ Given $y' = f(x,y)$, where $\begin{cases} y(x) \in \real^n\\ f:\real\times\real^
     xtick={-0.0},
     ytick={-0.0},]
     \clip(-1.,-1.) rectangle (13.,10.);
-    \draw[line width=1.pt,smooth,samples=100,domain=1.2000000009119923E-7:13.0] plot(\x,{ln((\x)^(5.0))-5.0});
+    \draw[line width=1.pt,smooth,samples=100,domain=1.2000000009119923E-2:13.0] plot(\x,{ln((\x)^(5.0))-5.0});
     \draw [->,line width=1.pt,color=qqwwzz] (4.789374476513226,2.831999067204186) -- (9.680475596667712,8.660000685442492);
     \draw [->,line width=1.pt,color=qqwwzz] (4.789374476513226,2.831999067204186) -- (7.261114317049705,5.777205767419718);
     \draw [->,line width=1.pt,color=xdxdff] (7.261114317049705,5.777205767419718) -- (12.459510324028214,8.81562663017468);
@@ -77,5 +77,88 @@ Given $y' = f(x,y)$, where $\begin{cases} y(x) \in \real^n\\ f:\real\times\real^
     \end{axis}
     \end{tikzpicture}
     \caption{One step of the enhanced Euler's method}
-    \label{fig:my_label}
-\end{figure}
+    \label{fig:EnhancedEuler}
+\end{figure}\-\\
+
+Given $y'(x) = f(y(x)), \quad y: \real \to \real, \quad f:\real \to \real$, we'll go through the steps to deduce the enhanced Euler's method with the help of the scheme in Figure \ref{fig:EnhancedEuler}. \\
+
+The auxiliary point $y_{n+1}^*$ can be found doing one step of the standard Euler's method, so 
+
+\[
+  y_{n+1}^* = y_n + h\cdot f(y_n)
+\]
+\vspace{0.01cm}
+
+To get the point $y_{n+1}$ we compute the average vector of $f(y_{n+1}^*)$ and $f(y_n)$, and with this new vector, we can apply again a step of Euler's method, ending up with our method
+
+\[
+  \boxed{y_{n+1} = y_n + \frac{h}{2}\cdot \left(f(y_{n+1}^*) + f(y_n)\right)}
+\]
+\newpage
+
+Let's find the LTE: \\
+
+The Local Truncation Error is given by:
+
+\[
+  LTE = \norm{\textit{method} - \textit{exact solution}}
+\]
+
+Then
+
+\[
+  LTE = \norm{y_{n+1} - y(x_{n+1})} = \Big\rVert y_n + \frac{h}{2}f(y_n) + \frac{h}{2}f(y_{n+1}^*) - \underbrace{y(x_{n+1})}_{y(x_n + h)}\Big\rVert = (*)
+\]
+
+Applying Taylor on $f(y_{n+1}^*) = f\left(y_n + hf(y_n)\right)$, we have
+
+\[
+  f\left(y_n + hf(y_n)\right) = f(y_n) + hf(y_n)f'(y_n) + \mathcal{O}(h^2)
+\]
+\\
+and on $y(x_n +h)$ we have
+
+\[
+  y(x_n + h) = y(x_n) + h\cdot y'(x_n) + \frac{h^2}{2}\cdot y''(x_n) + \mathcal{O}(h^3)
+\]
+
+(In this case, we expand to second order for later simplifications)
+
+\footnotesize
+
+\[
+    (*) = \norm{y_n + \frac{h}{2}f(y_n) + \frac{h}{2}\left(f(y_n) + hf(y_n)f'(y_n) + \mathcal{O}(h^2) \right) - \left(y(x_n) + h\cdot y'(x_n) + \frac{h^2}{2}\cdot y''(x_n) + \mathcal{O}(h^3) \right)} \quad (1)
+\]
+
+\normalsize
+\-\\
+Now, given $y'(x) = f(y(x))$, we have
+
+\vspace{-0.5cm}
+
+\begin{align*}
+    y''(x) &= f'(y(x))\cdot y'(x) \\
+           &= f'(y(x)) \cdot f(y(x))
+\end{align*}
+
+and we can rewrite the following expression as:
+
+\[
+  \frac{h^2}{2}f(y(x))f'(y(x)) = \frac{h^2}{2}y''(x)
+\]
+
+With that and the localising assumption ($y_n = y(x_n)$), we can simplify most of the terms in (1) and we end up with
+
+\small
+
+\[
+  \norm{\cancel{y_n} + \bcancel{\frac{h}{2}f(y_n) + \frac{h}{2}f(y_n)} + \xcancel{\frac{h^2}{2}f(y_n)f'(y_n)} + \mathcal{O}(h^3)  - \left(\cancel{y(x_n)} + \bcancel{h\cdot y'(x_n)} + \xcancel{\frac{h^2}{2}\cdot y''(x_n)} + \mathcal{O}(h^3) \right)} = \mathcal{O}(h^3)
+\]
+
+\normalsize
+\-\\\\
+So LTE $= \mathcal{O}(h^3)$\\
+
+\begin{remark}
+  Of course, this method also works for $y: \real \to \mathbb{R}^n, \, f:\real^n \to \real^n$
+\end{remark}
