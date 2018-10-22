@@ -162,3 +162,15 @@ So LTE $= \mathcal{O}(h^3)$\\
 \begin{remark}
   Of course, this method also works for $y: \real \to \mathbb{R}^n, \, f:\real^n \to \real^n$
 \end{remark}
+
+\subsection{Final remarks}
+\begin{itemize}
+    \item There's an improved Euler's method of order $2$ similar to the previous one: $$\boxed{y_{n+1} = y_n + hf\left(\frac{y_{n+1}^* + y_n}{2}\right)}$$
+    \item If we have a method of order $\geq 2$, and we want the value of $y(x^*)$, with $x^*$ off the mesh ($x^* \not= k\cdot h$), we have some options:\\
+    
+    $\quad$-Step back and take a step with the right $h$.\\
+    
+    $\quad$-Interpolate with the right order.\\
+    
+    $\quad$-Use a continuous Runge-Kutta method.
+\end{itemize}
