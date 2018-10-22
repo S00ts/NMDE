@@ -36,3 +36,46 @@ Given $y' = f(x,y)$, where $\begin{cases} y(x) \in \real^n\\ f:\real\times\real^
 \newpage
 
 \subsection{Enhanced Euler's method}
+
+\begin{figure}[h]
+    \centering
+    \definecolor{zzqqtt}{rgb}{0.6,0.,0.2}
+    \definecolor{qqttzz}{rgb}{0.,0.2,0.6}
+    \definecolor{qqwwzz}{rgb}{0.,0.4,0.6}
+    \definecolor{xdxdff}{rgb}{0.49019607843137253,0.49019607843137253,1.}
+    
+    \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=0.9285714285714286cm,y=0.9090909090909091cm]
+    \begin{axis}[
+    x=0.9285714285714286cm,y=0.9090909090909091cm,
+    axis lines=middle,
+    xmin=-1.0,
+    xmax=13.0,
+    ymin=-1.0,
+    ymax=10.0,
+    xtick={-0.0},
+    ytick={-0.0},]
+    \clip(-1.,-1.) rectangle (13.,10.);
+    \draw[line width=1.pt,smooth,samples=100,domain=1.2000000009119923E-7:13.0] plot(\x,{ln((\x)^(5.0))-5.0});
+    \draw [->,line width=1.pt,color=qqwwzz] (4.789374476513226,2.831999067204186) -- (9.680475596667712,8.660000685442492);
+    \draw [->,line width=1.pt,color=qqwwzz] (4.789374476513226,2.831999067204186) -- (7.261114317049705,5.777205767419718);
+    \draw [->,line width=1.pt,color=xdxdff] (7.261114317049705,5.777205767419718) -- (12.459510324028214,8.81562663017468);
+    \draw [->,line width=1.pt,color=xdxdff] (4.789374476513226,2.831999067204186) -- (10.,6.);
+    \draw [->,line width=1.pt,color=qqttzz] (9.680475596667712,8.660000685442492) -- (10.,6.);
+    \draw [->,line width=1.pt,color=qqttzz] (4.789374476513226,2.831999067204186) -- (9.827482089829717,7.436190020287211);
+    \draw [->,line width=1.pt,color=zzqqtt] (4.789374476513226,2.831999067204186) -- (7.731770530417767,5.520975629746587);
+    \draw (6.279627438393455,6.60187417823135) node[anchor=north west] {$y_{n+1}^*$};
+    \draw (4.257396566874901,3.6040056055416194) node[anchor=north west] {$y_n$};
+    \draw [color=zzqqtt](8.124469636971785,5.3778923349438275) node[anchor=north west] {$y_{n+1}$};
+    \draw (10.714344261899054,9.475570679862926) node[anchor=north west] {$f(y_{n+1}^*)$};
+    \draw (11.35294348448386,7.258212268110167) node[anchor=north west] {$f$};
+    \draw (8.5324635847343,9.369137476098794) node[anchor=north west] {$f(y_n)$};
+    \begin{scriptsize}
+    \draw [fill=xdxdff] (4.789374476513226,2.831999067204186) circle (2.5pt);
+    \draw [fill=xdxdff] (7.261114317049705,5.777205767419718) circle (2.5pt);
+    \draw [fill=zzqqtt] (7.731770530417767,5.520975629746587) circle (2.5pt);
+    \end{scriptsize}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{One step of the enhanced Euler's method}
+    \label{fig:my_label}
+\end{figure}
