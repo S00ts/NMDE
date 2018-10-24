@@ -3,7 +3,7 @@
 \subsection{Finite differences}
 
 \begin{example}[(1D Heat equation)]
-  Our problem is:
+  \-\\Our problem is:
   \[
     \begin{cases}
       U_t - U_{xx} = f\\
@@ -193,3 +193,19 @@ We discretize $x$ and $t$:
     %\label{fig:my_label}
 \end{figure}
 
+We'll use Taylor's expansion on $f$ to find an approximation for the derivatives:
+\begin{enumerate}[label={(\arabic*)}]
+    \item $f_{i+1} = f_i + hf_i' + \frac{h^2}{2}f_i'' + \frac{h^3}{3!}f_i''' + \ldots$
+    \item $f_{i-1} = f_i - hf_i' + \frac{h^2}{2}f_i'' - \frac{h^3}{3!}f_i''' + \ldots$
+\end{enumerate}\-\\
+
+\underline{Approximation of the first derivative}: \\
+\begin{itemize}
+    \item Forward differences (1) $$f_i' = \frac{f_{i+1} - f_i}{h} + \mathcal{O}(h)$$
+    \item Backwards differences (2) $$f_i' = \frac{f_i-f_{i-1}}{h} + \mathcal{O}(h)$$
+    \item Centered differences (1)-(2) $$f_i' = \frac{f_{i+1} - f_{i-1}}{2h} + \mathcal{O}(h^2)$$
+\end{itemize}
+
+\begin{remark}
+  With centered differences, it converges faster, but sometimes the other two methods are preferable for to ease in computations.
+\end{remark}
