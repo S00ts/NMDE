@@ -6,11 +6,11 @@
   \-\\Our problem is:
   \[
     \begin{cases}
-      U_t - U_{xx} = f\\
-      U(x,0) = U_0(x) &\longleftarrow\text{Initial condition (IC)}\\
+      u_t - u_{xx} = f\\
+      u(x,0) = u_0(x) &\longleftarrow\text{Initial condition (IC)}\\
       \begin{rcases}
-        U(a,t) = U_a \\
-        U(b,t) = U_b
+        u(a,t) = u_a \\
+        u(b,t) = u_b
       \end{rcases} &\longleftarrow\text{Boundary conditions (BC)}\\
     \end{cases}
   \]
@@ -47,20 +47,20 @@ We discretize $x$ and $t$:
         \draw [->,line width=1.pt] (-0.3346034577059823,3.7017839952482134) -- (-0.3329059840463152,3.8906629755388313);
         \draw [->,line width=1.pt] (3.121531540966689,-0.14907205546295046) -- (3.948030184929092,-0.14559937208495718);
         \draw [->,line width=1.pt] (3.823001199491475,-0.1461247039565438) -- (3.0069329894929098,-0.15254473884094374);
-        \draw [line width=1.pt] (1.,0.) -- (1.,8.);
-        \draw [line width=1.pt] (2.,0.) -- (2.,8.);
-        \draw [line width=1.pt] (3.,0.) -- (3.,8.);
-        \draw [line width=1.pt] (4.,0.) -- (4.,8.);
-        \draw [line width=1.pt] (5.,0.) -- (5.,8.);
-        \draw [line width=1.pt] (6.,0.) -- (6.,8.);
-        \draw [line width=1.pt] (7.,0.) -- (7.,8.);
-        \draw [line width=1.pt,domain=0.0:8.5] plot(\x,{(--7.-0.*\x)/7.});
-        \draw [line width=1.pt,domain=0.0:8.5] plot(\x,{(--4.-0.*\x)/2.});
-        \draw [line width=1.pt,domain=0.0:8.5] plot(\x,{(--3.-0.*\x)/1.});
-        \draw [line width=1.pt,domain=0.0:8.5] plot(\x,{(--4.-0.*\x)/1.});
-        \draw [line width=1.pt,domain=0.0:8.5] plot(\x,{(--5.-0.*\x)/1.});
-        \draw [line width=1.pt,domain=0.0:8.5] plot(\x,{(--6.-0.*\x)/1.});
-        \draw [line width=1.pt,domain=0.0:8.5] plot(\x,{(--7.-0.*\x)/1.});
+        \draw [line width=0.5pt] (1.,0.) -- (1.,8.);
+        \draw [line width=0.5pt] (2.,0.) -- (2.,8.);
+        \draw [line width=0.5pt] (3.,0.) -- (3.,8.);
+        \draw [line width=0.5pt] (4.,0.) -- (4.,8.);
+        \draw [line width=0.5pt] (5.,0.) -- (5.,8.);
+        \draw [line width=0.5pt] (6.,0.) -- (6.,8.);
+        \draw [line width=0.5pt] (7.,0.) -- (7.,8.);
+        \draw [line width=0.5pt,domain=0.0:8.5] plot(\x,{(--7.-0.*\x)/7.});
+        \draw [line width=0.5pt,domain=0.0:8.5] plot(\x,{(--4.-0.*\x)/2.});
+        \draw [line width=0.5pt,domain=0.0:8.5] plot(\x,{(--3.-0.*\x)/1.});
+        \draw [line width=0.5pt,domain=0.0:8.5] plot(\x,{(--4.-0.*\x)/1.});
+        \draw [line width=0.5pt,domain=0.0:8.5] plot(\x,{(--5.-0.*\x)/1.});
+        \draw [line width=0.5pt,domain=0.0:8.5] plot(\x,{(--6.-0.*\x)/1.});
+        \draw [line width=0.5pt,domain=0.0:8.5] plot(\x,{(--7.-0.*\x)/1.});
         \begin{scriptsize}
         \draw [fill=black] (1.,0.) circle (1.5pt);
         \draw [fill=black] (2.,0.) circle (1.5pt);
@@ -207,5 +207,115 @@ We'll use Taylor's expansion on $f$ to find an approximation for the derivatives
 \end{itemize}
 
 \begin{remark}
-  With centered differences, it converges faster, but sometimes the other two methods are preferable for to ease in computations.
+  With centered differences, it converges faster, but sometimes the other two methods are preferable for ease in computations.
 \end{remark}
+
+\underline{Approximation of the second derivative} (1)+(2) $$f_i'' = \frac{f_{i+1} - 2f_i + f_{i-1}}{h^2} + \mathcal{O}(h^2)$$\\
+
+There are higher order approximations, but these are the standard, and are more than enough. \\
+
+Now, we'll present some notation to differentiate between the problem we want to solve and the numerical problem.
+
+\begin{definition}\-\\
+  The \textbf{continuous problem} is 
+  $
+    \begin{cases}
+      \mathcal{L}(u) = f &\text{ in } \Omega, \, t > 0 \\
+      \mathcal{B}(u) = q &\text{ in } \partial \Omega, t > 0 \\
+      u(x,0) = u_0(x)
+    \end{cases}
+  $\\
+  
+  \-\\Where $\mathcal{L}$ is any differential operator. \\
+  
+  It's what we want to solve. \\
+  
+  The \textbf{discrete problem} \hspace{0.08cm}is\hspace{0.3cm}
+  $
+    \begin{cases}
+      L(u) + \tau = f \\
+      B(u) + \overline{\tau} = q \\
+      u(x,0) = u_0(x)
+    \end{cases}
+  $\\
+  
+  \-\\The \textbf{numerical problem} is
+  $
+    \begin{cases}
+      L(U) = f \\
+      B(U) = q \\
+      U(x,0) = u_0(x)
+    \end{cases}
+  $
+\end{definition}
+
+Let's go back to our 1D heat equation: \\
+
+The continuous problem is 
+
+\[
+\begin{cases}
+  u_t - u_{xx} = f \quad t>0, x\in(a,b)\\
+  u(a,t) = u_a\\
+  u(b,t) = u_b \\
+  u(x,0) = u_0(x)
+\end{cases}
+\]
+
+\underline{Notation}: $u(x_i,t^n) = u_i^n$ \\
+$x_i = a + i\Delta x \quad i = 0,\ldots N \quad x_0 = a,\, x_N = b \qquad$ (sometimes $\Delta x = h$).\\
+$t^n = n\Delta t \, n\geq0$\\
+
+\newpage
+
+We have the following explicit method:
+
+\subsubsection{Forward Time Centered Space method (FTCS)}
+
+\begin{itemize}
+    \item Approximate $u_t$ using forward differences (FT)
+    \item Approximate $u_{xx}$ using centered differences (CD)
+\end{itemize}
+
+Our discretized problem is
+
+\[
+  \frac{u_i^{n+1} - u_i^n}{\Delta t} + \bigo(\Delta t) - \frac{u_{i+1}^n - u_i^n + u_{i-1}^n}{\Delta x^2} + \bigo(\Delta x^2) = f_i^n
+\]
+
+We define $\tau = \bigo(\Delta t,\Delta x^2)$ \\
+
+Neglecting $\tau$, the numerical problem we want to solve is
+
+\[
+  \begin{cases}
+    \dfrac{U_i^{n+1} - U_i^n}{\Delta t} - \dfrac{U_{i+1}^n - U_i^n + U_{i-1}^n}{\Delta x^2} = f_i^n \vspace{0.2cm}\\
+    U_0^{n+1} = u_a(t^{n+1})\\
+    U_N^{n+1} = u_b(t^{n+1}) \\
+    U_i^0 = u_0(x_i)
+  \end{cases}
+\]
+
+Now we define $r$ as $$r = \frac{\Delta t}{\Delta x^2}$$
+
+So $$U_i^{n+1} = rU_{i-1}^n + (1-2r)U_i^n + rU_{i+1}^n + \Delta t f_i^n \qquad i = 1,\ldots,N-1$$
+
+For $i=1$, $$U_1^{n+1} = (1-2r)U_1^n + rU_2^n + \Delta t f_1^n + ru_a^n$$
+
+And for $i=N-1$, $$U_{N-1}^{n+1} = rU_{N-2}^n + (1-2r)U_{N-1}^n + \Delta t f_{N-1}^n + ru_b^n$$
+
+Thus, $$\overline{U^{n+1}} = \underset{^\sim}{B}\overline{U^n} + \overline{F} + \overline{G}$$
+
+Where 
+
+$$\overline{U^p} = \left(U_1^p, U_2^p, \ldots , U_{N-1}^p \right)^T \qquad \overline{F}=\Delta t\left(f_1^n, f_2^n, \ldots,f_{N-1}^n \right)^T \qquad \overline{G} = \left(ru_a^n, 0, \ldots,0,ru_b^n \right)^T$$
+$$
+  \underset{^\sim}{B} = 
+  \begin{pmatrix}
+    \scriptstyle\small{1-2r} & r \\
+    r    & \scriptstyle\small{1-2r} & r \\
+         & \ddots & \ddots & \ddots \\
+         &        & r & \scriptstyle\small{1-2r} & r \\
+         &        &   & r    & \scriptstyle\small{1-2r}
+  \end{pmatrix}
+$$
