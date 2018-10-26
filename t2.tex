@@ -1,10 +1,76 @@
 \section{Runge-Kutta and Linear Multistep Methods}
 
 \subsection{General Runge-Kutta methods}
-\subsubsection{Embedded R-K}
+
+Runge-Kutta methods are a family of iterative methods, which include the previously seen Euler's Method. Let's define an RK method with $s$ stages:\\
+
+Given $x\in \real, \, y\in\real^n,\, y'=f(x,y)$
+
+\begin{definition}
+  The \textbf{Butcher Tableau} is 
+  $$\begin{array}{c|c c c c}
+     c_1    & a_{11} & a_{12} & \ldots  & a_{1s} \\
+     c_2    & a_{21} & a_{22} &         & \vdots \\
+     \vdots & \vdots &        & \ddots  & \vdots \\
+     c_s    & a_{s1} & \hdotsfor{2}     & a_{ss} \\
+     \hline
+            & b_1    & \hdotsfor{2}     & b_s
+  \end{array}$$
+\end{definition}
+
+With these coefficients given by the table, we can now define our Runge-Kutta method:
+
+$$
+\begin{rcases}
+  k_1 = f\Big(x_n + c_1h, y_n + h(a_{11}k_1 + a_{12}k_2 + \ldots + a_{1s}k_s)\Big)\\
+  k_2 = f\Big(x_n + c_2h, y_n + h(a_{21}k_1 + a_{22}k2 + \ldots + a_{2s}k_s)\Big) \\
+  \hspace{0.15cm}\vdots \\
+  k_s = f\Big(x_n + c_sh, y_n + h(a_{s1}k_1 + a_{s2}k2 + \ldots + a_{ss}k_s)\Big)
+\end{rcases} \substack{\text{System of equations} \\ \text{with unknowns } k_1, k_2, \ldots, k_s}
+$$\-\\
+
+$$\boxed{y_{n+1} = y_n + h(b_1k_1 + b_2k_2 + \ldots + b_sk_s)}$$
+
+\-\\
+
+\underline{Cases}:
+\begin{enumerate}[label = (\arabic*)]
+    \item Explicit ($a_{ij} = 0$ for $j\geq i$)
+    \item Semi-implicit ($a_{ij} = 0$ for $j>i$)
+    \item Implicit\-\\
+\end{enumerate}
+\begin{remark}
+  (2) and (3) are used for stiff problems.
+\end{remark}
 
 \newpage
 
+\begin{theorem}
+  An explicit $s$-stage Runge-Kutta method can't have order $> 5$.
+\end{theorem}
+
+\begin{theorem}
+  There is no explicit $5$-stage RK of order $5$.
+\end{theorem}
+
+\begin{theorem}\-\\
+
+  Let \\
+  
+  \-\hspace{0.5cm}$A = \text{order } p \text{ for } y'=f(y), \, f:\real^m \to \real^m, \, m>1$\\
+  \-\hspace{0.5cm}$B = \text{order } p \text{ for } y'=f(x,y), \, f:\real\times\real \to \real$\\
+  \-\hspace{0.5cm}$C = \text{order } p \text{ for } y'=f(y), \, f:\real \to \real$\\
+  
+  Then\\
+  
+  \-\hspace{0.5cm}$\text{For }1\leq p\leq3, \, A\iff B \iff C$ \\
+  \-\hspace{0.5cm}$\text{For }p = 4,        \, A\iff B \implies C \, \text{ but } C \centernot\implies B$\\
+  \-\hspace{0.5cm}$\text{For }p \geq 5,     \, A\hspace{0.1cm}\implies B \implies C \, \text{ but } C \centernot\implies B, \, B \centernot\implies A$\\
+\end{theorem}
+
+\subsubsection{Embedded RK}
+
+\newpage
 \subsection{Linear multistep methods}
 \subsubsection{Generalities}
 \subsubsection{Predictor-Corrector method}
