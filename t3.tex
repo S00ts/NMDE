@@ -17,7 +17,7 @@ Trying to solve it using an explicit adaptive stepsize method like Matlab's \tex
   \caption{Van der Pol equation solution with ode45 ($\mu = 10$)}
 \end{figure}
 
-With $873$ steps needed, and a minimum stepsize of $2.5119\cdot 10^{-5}$\\
+With $873$ steps needed, and a minimum stepsize of $2.5119\cdot 10^{-5}$.\\
 
 \newpage
 
@@ -29,7 +29,7 @@ Now, using an implicit method like Matlab's \texttt{ode15s}, we have
   \caption{Van der Pol equation solution with ode15s ($\mu = 10$)}
 \end{figure}
 
-Which clearly, uses less steps to pass through the stiff areas (a total of $326$ with minimum stepsize $0.00014607$).\\
+Which clearly uses less steps to pass through the stiff areas (a total of $326$ with minimum stepsize $0.00014607$).\\
 
 If we where to solve it with a larger $\mu$, for example $\mu = 1000$, the number of steps needed using \texttt{ode45} is $5.495.393$ which is too much compared to the $586$ needed with \texttt{ode15s}.
 
