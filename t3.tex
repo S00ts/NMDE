@@ -1,1 +1,36 @@
 \section{Stiff Problems}
+
+In some ODEs, the step size taken by an adaptive method is forced to be unreasonably small even in regions where the solution curve is smooth. In these cases, it takes a large amount of steps to go through a short time interval.\\
+
+These types of equations are called \textbf{stiff ODEs}.
+
+\begin{example}[(Van der Pol equation)]\-\\
+Given the Van der Pol equation $$\ddot{x} - \mu(1-x^2)\dot{x} + x = 0$$
+
+the larger the constant $\mu$, the stiffer is the problem. \\
+
+Trying to solve it using an explicit adaptive stepsize method like Matlab's \texttt{ode45} yields
+
+\begin{figure}[h]
+  \centering
+  \includesvg{VanDerPolOde45.svg}
+  \caption{Van der Pol equation solution with ode45 ($\mu = 10$)}
+\end{figure}
+
+With $873$ steps needed, and a minimum stepsize of $2.5119\cdot 10^{-5}$\\
+
+\newpage
+
+Now, using an implicit method like Matlab's \texttt{ode15s}, we have
+
+\begin{figure}[h]
+  \centering
+  \includesvg{VanDerPolOde15s.svg}
+  \caption{Van der Pol equation solution with ode15s ($\mu = 10$)}
+\end{figure}
+
+Which clearly, uses less steps to pass through the stiff areas (a total of $326$ with minimum stepsize $0.00014607$).\\
+
+If we where to solve it with a larger $\mu$, for example $\mu = 1000$, the number of steps needed using \texttt{ode45} is $5.495.393$ which is too much compared to the $586$ needed with \texttt{ode15s}.
+
+\end{example}
