@@ -11,6 +11,7 @@ the larger the constant $\mu$, the stiffer is the problem. \\
 
 Trying to solve it using an explicit adaptive stepsize method like Matlab's \texttt{ode45} yields
 
+
 \begin{figure}[h]
   \centering
   \includesvg{VanDerPolOde45.svg}
@@ -31,6 +32,50 @@ Now, using an implicit method like Matlab's \texttt{ode15s}, we have
 
 Which clearly uses less steps to pass through the stiff areas (a total of $326$ with minimum stepsize $0.00014607$).\\
 
-If we where to solve it with a larger $\mu$, for example $\mu = 1000$, the number of steps needed using \texttt{ode45} is $5.495.393$ which is too much compared to the $586$ needed with \texttt{ode15s}.
+If we where to solve it with a larger $\mu$, for example $\mu = 1000$, the number of steps needed using \texttt{ode45} is $5.495.393$ which is too much compared to the $586$ needed with \texttt{ode15s}.\\
 
 \end{example}
+
+\newpage
+
+\begin{definition}
+  The set of values of the stepsize $h$ such that $\lim\limits_{h\to0}y_n = 0$ is called the \textbf{absolute stability region}.
+\end{definition}
+
+Let's see what happens with a general linear multistep method applied to a linear system:\\
+
+Our method is
+
+\[
+  \underbrace{\sum_{j=0}^k\alpha_jy_{n+j}}_{\rho} = h\underbrace{\sum_{j=0}^k\beta_jf_{n+j}}_{\sigma}
+\]
+
+We apply it to $$y' = Ay$$ where we'll assume that the eigenvalues of $A$ ($\lambda_1, \ldots, \lambda_n$) are all different (so that it's diagonalizable) and have negative real parts. \\
+
+$y = e^{Ax}$ is the fundamental solution, and if $y(0) = y_0$, the solution is $$y(x) = e^{Ax}y_0$$ with $$\lim_{x\to\infty}e^{Ax} = \begin{pmatrix}
+                                               0      & \ldots & 0      \\
+                                               \vdots & \ddots & \vdots \\
+                                               0      & \ldots & 0
+                                             \end{pmatrix}$$
+
+Now, with the system $y' = Ay$, our general method looks like
+
+\[
+  \sum_{j=0}^k\alpha_jy_{n+j} = h\sum_{j=0}^k\beta_jAy_{n+j}
+\]
+
+Let's rewrite it:
+
+$$\sum_{j=0}^k(\alpha_jI-h\beta_jA)y_{n+j} = 0$$
+\begin{center}
+    \rotatebox{270}{$\leadsto$}
+\end{center}
+$$\sum_{j=0}^k\left(\alpha_jI-h\beta_j\begin{pmatrix}\lambda_1 & & \\ & \ddots & \\ & & \lambda_n \end{pmatrix}\right)y_{n+j} = 0$$
+\begin{center}
+    \rotatebox{270}{$\leadsto$}
+\end{center}
+$$\sum_{j=0}^k(\alpha_jI-h\beta_j\lambda_i)y_{n+j} = 0 \qquad (\forall i = 1,\ldots,n)$$
+
+\newpage
+
+A finite difference equation bla bla bla
