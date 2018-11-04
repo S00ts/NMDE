@@ -39,7 +39,7 @@ If we where to solve it with a larger $\mu$, for example $\mu = 1000$, the numbe
 \newpage
 
 \begin{definition}
-  The set of values of the stepsize $h$ such that $\lim\limits_{h\to0}y_n = 0$ is called the \textbf{absolute stability region}.
+  The set of values of the stepsize $h$ such that $\lim\limits_{h\to0}y_n = 0$ is called the \textbf{absolute stability region} ($\Omega$).
 \end{definition}
 
 Let's see what happens with a general linear multistep method applied to a linear system:\\
@@ -78,4 +78,131 @@ $$\sum_{j=0}^k(\alpha_jI-h\beta_j\lambda_i)y_{n+j} = 0 \qquad (\forall i = 1,\ld
 
 \newpage
 
-A finite difference equation bla bla bla
+A finite difference equation looks like
+
+\[
+  a_ky_{n+k} + a_{k-1}y_{n+k-1} + \ldots + a_0y_n = 0
+\]
+
+Which has roots $r_1,\ldots,r_k$. So the solution is:
+
+\[
+  y_n = c_1r_1^n + c_2r_2^n + \ldots + c_kr_k^n \underset{\text{if } Re(r_k)<0}{\xrightarrow{\hspace*{2cm}}} 0
+\]
+
+\begin{prop}
+    Given $$\hat{h} = h\lambda_i, \quad \rho(z) = \sum\alpha_jz^j, \quad \sigma(z) = \sum\beta_jz^j$$
+    the method is absolutely stable for values of $\hat{h}$ such that the roots of $\rho(\hat{h}) - h\sigma(\hat{h}) = 0$ have negative real parts.
+\end{prop}
+\-\\
+Let's see the one dimensional case with Euler's method:
+
+\usetikzlibrary[patterns]
+
+\begin{example}[(Stability region with Euler's method)]
+    
+    \[
+      \begin{rcases}
+        y_{n+1} = y_n + hf(y_n)\\
+        \hspace{2cm}f(y) = \lambda y
+      \end{rcases} \leadsto y_{n+1} = y_n + h\lambda y_n = (1+h\lambda)y_n
+    \]
+    
+    $$\implies y_n = y_0c(1+h\lambda)^n \underset{\text{if } \abs{1+\lambda h} < 1}{\xrightarrow{\hspace*{2cm}}} 0$$
+    \begin{figure}[h]
+        \definecolor{qqwwzz}{rgb}{0.,0.4,0.6}
+        \centering
+        \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm, scale = 2]
+        \begin{axis}[
+        x=1.0cm,y=1.0cm,
+        axis lines=middle,
+        xmin=-3.0,
+        xmax=1.0,
+        ymin=-1.5,
+        ymax=1.5,
+        xtick={-0},
+        ytick={-0},]
+        \clip(-3.,-1.5) rectangle (1.,1.5);
+        \draw [rotate around={0.:(-1.,0.)},line width=0.5pt,color=qqwwzz,fill=qqwwzz,pattern=north east lines,pattern color=qqwwzz] (-1.,0.) ellipse (1.cm and 1.cm);
+        \draw (-1,0.8) node[anchor=north west] {$\Omega$};
+        \draw (-1.4,0.012479994921094003) node[anchor=north west] {$\scriptstyle\footnotesize{-1}$};
+        \begin{scriptsize}
+        \draw [color=black] (-1.,0.)-- ++(-1.5pt,0 pt) -- ++(3.0pt,0 pt) ++(-1.5pt,-1.5pt) -- ++(0 pt,3.0pt);
+        \end{scriptsize}
+        \end{axis}
+        \end{tikzpicture}
+        \caption{For all eigenvalues, $\hat{h}$ must be in $\Omega$ (stability region)}
+        \label{fig:my_label}
+    \end{figure}
+    
+    \newpage
+    
+    \underline{Particular example}\\
+    
+    $$\begin{cases}
+        y_1' = -2y_1 + y_2 + 2\sin t \\
+        y_2' = 998y_1 - 999y_2 + 999(\cos t - \sin t)
+      \end{cases}$$
+    
+    This is a stiff system, with
+    
+    \[
+      J = 
+      \begin{pmatrix} 
+        -2  & 1 \\
+        998 & -999
+      \end{pmatrix} \qquad \text{Eigenvalues}\left(J \right) = \setb{-1000, -1}
+    \]\\
+    So the stepsize $h$ needs to verify $$\abs{1+h(-1000)} < 1$$
+    
+    $$\implies h \leq \frac{1}{500}$$
+\end{example}
+\-\\
+Let's do it now with backwards Euler:
+
+\begin{example}[(Stability region with backwards Euler)]
+    $$y_{n+1} = y_n + \hat{h}y_{n+1} \leadsto (1-\hat{h})y_{n+1} = y_n \leadsto y_{n+1} = \frac{1}{1-\hat{h}}y_n$$
+    $$\implies \norm{1-\hat{h}} = \norm{\hat{h}-1}>1$$
+    
+    \begin{figure}[h]
+        \centering
+        \definecolor{qqwwzz}{rgb}{0.,0.4,0.6}
+        \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm, scale = 2]
+        \begin{axis}[
+        x=1.0cm,y=1.0cm,
+        axis lines=middle,
+        xmin=-1.0,
+        xmax=3.0,
+        ymin=-1.5,
+        ymax=1.5,
+        xtick={-0},
+        ytick={-0},]
+        \clip(-1.,-1.5) rectangle (3.,1.5);
+        \fill[pattern=north east lines,pattern color=qqwwzz]
+        (current bounding box.north west)
+        rectangle
+        (current bounding box.south east);
+        \draw [rotate around={0.:(1.,0.)},line width=0.5pt,color=qqwwzz,fill=white] (1.,0.) ellipse (1.cm and 1.cm);
+        \draw (0.79,0.03359130568751314) node[anchor=north west] {$\scriptstyle\footnotesize{1}$};
+        \draw (2.0233108635400727,1.3) node[anchor=north west] {$\Omega$};
+        \begin{scriptsize}
+        \draw [color=black] (1.,0.)-- ++(-1.5pt,0 pt) -- ++(3.0pt,0 pt) ++(-1.5pt,-1.5pt) -- ++(0 pt,3.0pt);
+        \draw (0,0) -- (2,0);
+        \end{scriptsize}
+        \end{axis}
+        \end{tikzpicture}
+    \caption{Stability region $\Omega$ with backwards Euler}
+    \label{fig:my_label}
+    \end{figure}
+    
+\end{example}
+
+\begin{remark}
+      If all eigenvalues are $< 1$, we can take any $h$, as all $\hat{h}$ are $<0$.
+\end{remark}
+
+\newpage
+
+\begin{example}[(Dekker-Verwer p.7-8)]
+    
+\end{example}
