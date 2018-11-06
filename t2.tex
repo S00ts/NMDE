@@ -68,7 +68,29 @@ $$\boxed{y_{n+1} = y_n + h(b_1k_1 + b_2k_2 + \ldots + b_sk_s)}$$
   \-\hspace{0.5cm}$\text{For }p \geq 5,     \, A\hspace{0.1cm}\implies B \implies C \, \text{ but } C \centernot\implies B, \, B \centernot\implies A$\\
 \end{theorem}
 
-\subsubsection{Embedded RK}
+\subsubsection{Embedded Runge-Kutta methods}
+
+Embedded methods combine two methods of order $p$ and $p+1$ to obtain an estimate of the LTE. This error estimate is useful for adaptive stepsize methods. \\
+
+In this case, the \textit{Butcher tableau} is
+
+$$\begin{array}{c|c c c c c}
+     0                                                                   \\
+     c_2    & a_{21}                                                     \\
+     c_3    & a_{31}            & a_{32}                                 \\
+     \vdots & \vdots            &                  & \ddots              \\
+     c_s    & a_{s1}            & \hdotsfor{2}               & a_{s,s-1} \\
+     \hline
+            & b_1               & \hdotsfor{2}               & b_{s-1}   & b_s  \\
+            & \overline{b}_1    & \hdotsfor{2}               & \overline{b}_{s-1}  &\overline{b}_s
+\end{array}$$\-\\
+This kind of method has the advantage that it usually requires less steps even though there are more evaluations for each step.\\
+
+Matlab's current \texttt{ode45} solver uses an embedded RK method with orders $4$ and $5$.
+
+\vspace{-3.5cm}\hspace{11.2cm}order $p$
+
+\vspace{+0.05cm}\hspace{11.2cm}order $p+1$
 
 \newpage
 \subsection{Linear multistep methods}
