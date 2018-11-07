@@ -31,11 +31,15 @@ Given $y' = f(x,y)$, where $\begin{cases} y(x) \in \real^n\\ f:\real\times\real^
   We define the \textbf{local truncation error} as the error caused by one iteration, i.e. $$LTE = \norm{y(x_k) - y_k} \qquad \text{\big(assuming the \textit{localizing assumption}: $y_{k-1} = y(x_{k-1})$\big)}$$
 \end{definition}
 
+\begin{definition}
+  A method is of \textbf{order} $p$ if the LTE is of the form $$\text{LTE} = Ch^{p+1} + \mathcal{O}(h^{p+2})$$
+\end{definition}
+
 \subsection{Euler's method}
 
 \newpage
 
-\subsection{Enhanced Euler's method}
+\subsection{Improved Euler's method} \label{imprEu}
 
 \begin{figure}[h]
     \centering
@@ -80,7 +84,7 @@ Given $y' = f(x,y)$, where $\begin{cases} y(x) \in \real^n\\ f:\real\times\real^
     \label{fig:EnhancedEuler}
 \end{figure}\-\\
 
-Given $y'(x) = f(y(x)), \quad y: \real \to \real, \quad f:\real \to \real$, we'll go through the steps to deduce the enhanced Euler's method with the help of the scheme in Figure \ref{fig:EnhancedEuler}. \\
+Given $y'(x) = f(y(x)), \quad y: \real \to \real, \quad f:\real \to \real$, we'll go through the steps to deduce the improved Euler's method (also called Heun's method) with the help of the scheme in \text{Figure \ref{fig:EnhancedEuler}}. \\
 
 The auxiliary point $y_{n+1}^*$ can be found doing one step of the standard Euler's method, so 
 
@@ -165,7 +169,7 @@ So LTE $= \mathcal{O}(h^3)$\\
 
 \subsection{Final remarks}
 \begin{itemize}
-    \item There's an improved Euler's method of order $2$ similar to the previous one: $$\boxed{y_{n+1} = y_n + hf\left(\frac{y_{n+1}^* + y_n}{2}\right)}$$
+    \item There's an enhanced Euler's method of order $2$ similar to the previous one: $$\boxed{y_{n+1} = y_n + hf\left(\frac{y_{n+1}^* + y_n}{2}\right)}$$
     \item If we have a method of order $\geq 2$, and we want the value of $y(x^*)$, with $x^*$ off the mesh ($x^* \not= k\cdot h$), we have some options:\\
     
     $\quad$-Step back and take a step with the right $h$.\\
