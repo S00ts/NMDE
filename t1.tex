@@ -36,11 +36,73 @@ Given $y' = f(x,y)$, where $\begin{cases} y(x) \in \real^n\\ f:\real\times\real^
 \end{definition}
 
 \subsection{Euler's method}
+\subsubsection{Formulation}
+Consider the differential equation system
+\begin{equation}\label{sys1.2}
+  y'(x) = f(y(x)), \qquad y(x_0) = y_0 \qquad (\text{with } f:\real^n \to \real^n)
+\end{equation}
+
+We'll also assume, for later results, that $f$ satisfies a Lipschitz condition $$\norm{f(y) - f(z)} \leq L\norm{y-z}$$
+
+Now, we want to find an approximation of (\ref{sys1.2}) on an interval $[x_0, x_N]$, so we'll create a set of $N+1$ evenly spaced points between $x_0$ and $x_N$, where $N$ is the number of steps and $h = \dfrac{x_N-x_0}{N}$ the stepsize.\\
+
+To do that, we can use Euler's method
+\[
+  y_{n+1} = y_n + hf(y_n)
+\]
+
+\newpage
+
+\subsubsection{Local truncation error}
+
+We want to find $LTE = \norm{y(x_{n+1}) - y_{n+1}}$. Let's expand it
+
+\begin{align*}
+    y(x_{n+1}) - y_{n+1} &= y(x_n + h) - y_{n+1} = y(x_n) + hy'(x_n) + \mathcal{O}(h^2) - y_n - hf(y_n) \underset{\text{Loc.ass.}}{=} \\
+    &= y(x_n)+ hy'(x_n) + \mathcal{O}(h^2) - y(x_n) - hf(y_{x_n}) \\
+    &= hy'(x_n) + \mathcal{O}(h^2) - hy'(x_n) = \mathcal{O}(h^2)
+\end{align*}
+  
+So LTE = $\mathcal{O}(h^2)$, and the method has order $p=1$.
+
+\subsubsection{Convergence}
+
+For the method to be convergent, it has to verify $$\norm{y(x_N) - y_N} \underset{h\to0}{\longrightarrow} 0$$
+
+Similar as what we did with the LTE, we'll find a bound for the error in one step, but this time without using the localizing assumption:
+
+\begin{align*}
+    \norm{y(x_{n+1}) - y_{n+1}} &= \norm{y(x_n + h) - y_n - hf(y_n)} \underset{\text{Taylor}}{=} ||y(x_n) + h\underbrace{y'(x_n)}_{f(y(x_n))} + \Tilde{c}h^2 - y_n - hf(y_n)|| \\
+    &\leq \norm{y(x_n) - y_n} + h\underbrace{\norm{f(y(x_n)) - f(y_n)}}_{\substack{\text{\rotatebox{270}{$\leq$}} \\ L\norm{y(x_n) - y_n}}} + ch^2 \leq (1+hL)\norm{y(x_n) - y_n} + ch^2 \quad \forall n
+\end{align*}
+
+Thus
+\begin{align*}
+    &\norm{y(x_1) - y_1} \leq (1+hL)\norm{y(x_0) - y_0} + c_1h^2 \\
+    &\norm{y(x_2) - y_2} \leq (1+hL)\norm{y(x_1) - y_1} + c_2h^2 \leq (1+hL)^2\norm{y(x_0) - y_0} + (1+hL)c_1h^2 + c_2h^2 \\
+    &\norm{y(x_3) - y_3} \leq (1+hL)^3\norm{y(x_0) - y_0} + (1+hL)^2c_1h^2 + (1+hL)c_2h^2 + c_3h^2\\
+    &\hspace{1.2cm}\vdots
+\end{align*}
+%\-\\
+Let $C = \underset{i}{\text{max}}\,c_i$ \\
+
+Then
+\begin{align*}
+    \norm{y(x_N) - y_N} \leq (1+hL)^N \norm{y(x_0) - y_0} + \underbrace{\Big(1 + (1+hL) + (1+hL)^2 + \ldots + (1+hL)^{N-1}\Big)}_{\substack{\text{\hspace{-0.94cm}geom$\to\,$\rotatebox{90}{$=$}}\\\frac{(1+hL)^N-1}{hL}}}Ch^2
+\end{align*}
+
+\[
+  \implies \norm{y(x_n) - y_N} \leq (1+hL)^N\underbrace{\norm{y(x_0) - y_0}}_{\substack{\text{\hspace{-0.6cm}(\ref{sys1.2})\,\rotatebox{90}{=}}\\ 0}} + \frac{(1+hL)^N-1}{\cancel{h}L}\cdot Ch^{\cancel{2}} \leq Ah \to 0
+\]
+
+\begin{remark}
+  In the last inequality we used $(1+hL)^N = e^{N\log(1+hL)} \underset{\substack{\log(1+x)\\\leq x + cx^2}}{=} e^{NhL + \alpha Nh^2} =$ $=e^{L(x_N-x_0)}\cdot e^{ch}\qquad$ ($Nh = x_n-x_0$)
+\end{remark}
 
 \newpage
 
 \subsection{Improved Euler's method} \label{imprEu}
-
+\subsubsection{Formulation}
 \begin{figure}[h]
     \centering
     \definecolor{zzqqtt}{rgb}{0.6,0.,0.2}
@@ -100,7 +162,7 @@ To get the point $y_{n+1}$ we compute the average vector of $f(y_{n+1}^*)$ and $
 \]
 \newpage
 
-Let's find the LTE: \\
+\subsubsection{Local truncation error}
 
 The Local Truncation Error is given by:
 
