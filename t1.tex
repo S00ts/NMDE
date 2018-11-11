@@ -59,7 +59,7 @@ We want to find $LTE = \norm{y(x_{n+1}) - y_{n+1}}$. Let's expand it
 
 \begin{align*}
     y(x_{n+1}) - y_{n+1} &= y(x_n + h) - y_{n+1} = y(x_n) + hy'(x_n) + \mathcal{O}(h^2) - y_n - hf(y_n) \underset{\text{Loc.ass.}}{=} \\
-    &= y(x_n)+ hy'(x_n) + \mathcal{O}(h^2) - y(x_n) - hf(y_{x_n}) \\
+    &= y(x_n)+ hy'(x_n) + \mathcal{O}(h^2) - y(x_n) - hf(y(x_n)) \\
     &= hy'(x_n) + \mathcal{O}(h^2) - hy'(x_n) = \mathcal{O}(h^2)
 \end{align*}
   
