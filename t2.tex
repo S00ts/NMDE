@@ -354,17 +354,16 @@ Let's see an example of divergence using a linear multistep method:
     \[
        \implies e^{-h} = (1-h+o(h^2)) + c_2\big(\underbrace{-5-3h+o(h^2) - 1 + h + o(h^2)}_{-6-2h+o(h^2)}\big)
     \]
-    \huge{\textbf{Ignore the following part. \\Needs review}}
-    \normalsize
+    
     \[
-      \implies c_2 = \frac{e^{-h} - 1 + h +o(h^2)}{-6-2h+o(h^2)} \underset{\text{Taylor }e^{-h}}{=} \frac{1-h+o(h^2) - 1 + h +o(h^2)}{-6-2h+o(h^2)} \simeq \frac{-1}{6+2h}
+      \implies c_2 = \frac{e^{-h} - 1 + h +o(h^2)}{-6-2h+o(h^2)} \underset{\text{Taylor }e^{-h}}{=} \frac{1-h+o(h^2) - 1 + h +o(h^2)}{-6-2h+o(h^2)} = \frac{o(h^2)}{-6-2h + o(h^2)}
     \]
     
     \[
-      \implies c_1 \simeq 1 + \frac{1}{6+2h} = \frac{7+2h}{6+2h}
+      \implies c_1 = 1 + \frac{1}{6+2h+o(h^2)} = \frac{7+2h+o(h^2)}{6+2h+o(h^2)}
     \]
     
-    \-\\So $$y_n = \frac{7+2h}{6+2h}\big(1-h+o(h^2)\big)^n + \frac{-1}{6+2h}\big(-5-3h+o(h^2)\big)^n$$
+    \-\\So $$y_n = \frac{7+2h+o(h^2)}{6+2h+o(h^2)}\big(1-h+o(h^2)\big)^n + \frac{o(h^2)}{-6-2h + o(h^2)}\big(-5-3h+o(h^2)\big)^n$$
     
     \-\\and the term $(-5)^n$ will cause the solution to diverge.
 \end{example}
