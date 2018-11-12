@@ -194,11 +194,11 @@ Then  $$\text{LTE} \simeq \norm{y_{n+1} - \hat{y}_{n+1}}$$
 
 If the method is of order $p$, we have
 \begin{align}
-    y(x_{n+1}) - y_{n+1} &= Ch^{p+1} + \mathcal{O}(h^{p+2})\\
-    y(x_{n+1}) - \hat{y}_{n+1} &= 2C\left(\frac{h}{2}\right)^{p+1} + \mathcal{O}(h^{p+2})
+    y(x_{n+1}) - y_{n+1} &= Ch^{p+1} + \mathcal{O}(h^{p+2})\label{eq:rich1}\\
+    y(x_{n+1}) - \hat{y}_{n+1} &= 2C\left(\frac{h}{2}\right)^{p+1} + \mathcal{O}(h^{p+2}) \label{eq:rich2}
 \end{align}
       
-And subtracting (2.1) - (2.2), we end up with
+And subtracting (\ref*{eq:rich1}) - (\ref*{eq:rich2}), we end up with
 
 $$\hat{y}_{n+1} - y_{n+1} = C\left(h^{p+1}-2\frac{h^{p+1}}{2^{p+1}}\right) = Ch^{p+1}\underbrace{\left(1-\frac{1}{2^p}\right)}_{\dfrac{2^p-1}{2^p}} \simeq \text{LTE}$$
 
@@ -220,7 +220,7 @@ And the new stepsize is given by $$h^* = 0.9h\left(\frac{TOL}{\norm{\hat{y}_{n+1
   
   and the polynomials
   \begin{align*}
-      \rho(z)   &= z^k + a_{k-1}z^{k-1} + \ldots + a_0\\
+      \rho(z)   &= z^k + \alpha_{k-1}z^{k-1} + \ldots + \alpha_0\\
       \sigma(z) &= \beta_kz^k + \beta_{k-1}z^{k-1} + \ldots + \beta_0
   \end{align*}
   
