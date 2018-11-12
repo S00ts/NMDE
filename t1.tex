@@ -69,7 +69,7 @@ So LTE = $\mathcal{O}(h^2)$, and the method has order $p=1$.
 
 For the method to be convergent, it has to verify $$\norm{y(x_N) - y_N} \underset{h\to0}{\longrightarrow} 0$$
 
-Similar as what we did with the LTE, we'll find a bound for the error in one step, but this time without using the localizing assumption:
+Similar to what we did with the LTE, we'll find a bound for the error in one step, but this time without using the localizing assumption:
 
 \begin{align*}
     \norm{y(x_{n+1}) - y_{n+1}} &= \norm{y(x_n + h) - y_n - hf(y_n)} \underset{\text{Taylor}}{=} ||y(x_n) + h\underbrace{y'(x_n)}_{f(y(x_n))} + \Tilde{c}h^2 - y_n - hf(y_n)|| \\
