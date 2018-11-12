@@ -354,7 +354,8 @@ Let's see an example of divergence using a linear multistep method:
     \[
        \implies e^{-h} = (1-h+o(h^2)) + c_2\big(\underbrace{-5-3h+o(h^2) - 1 + h + o(h^2)}_{-6-2h+o(h^2)}\big)
     \]
-    
+    \huge{\textbf{Ignore the following part. \\Needs review}}
+    \normalsize
     \[
       \implies c_2 = \frac{e^{-h} - 1 + h +o(h^2)}{-6-2h+o(h^2)} \underset{\text{Taylor }e^{-h}}{=} \frac{1-h+o(h^2) - 1 + h +o(h^2)}{-6-2h+o(h^2)} \simeq \frac{-1}{6+2h}
     \]
