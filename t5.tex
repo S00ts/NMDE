@@ -1,1 +1,240 @@
-\section{Numerical Solution of PDEs with the Finite Difference Method}
+\section{Numerical Solution of PDEs with the Finite Elements Method}
+
+\subsection{From the strong form to the weak form}
+
+Given the following problem in \textbf{strong form}: 
+
+\[
+  \begin{cases}
+    \nabla\cdot\left(\subTilde{A}\,\nabla u\right) = -s \quad &\text{in }\Omega\\
+    u = u_D \quad &\text{on } \Gamma_D\\
+    \subTilde{A}\frac{\partial u}{\partial n} = q \quad &\text{on } \Gamma_N
+  \end{cases}
+\]
+
+Where 
+\begin{align*}
+      \Gamma_D\cup\Gamma_N &= \partial\Omega\\
+      \Gamma_D\cap\Gamma_N &= \varnothing
+\end{align*}
+
+$s$ is the source term (it's a function), but for the moment we'll assume that both $s$ and $\subTilde{A}$ don't depend on $u$. \\
+
+We'll derive the equivalent weak form of the problem using \textbf{weighted residuals}:
+
+\[
+  \int_\Omega\omega\nabla\cdot\left(\subTilde{A}\,\nabla u\right)\,d\Omega = -\int_\Omega \omega s \, d\Omega \qquad\forall \omega \text{ such that } \omega = 0 \text{ on } \Gamma_D
+\]
+
+Where $\omega$ is the \textbf{test function} (or \textbf{weighting function}). \\
+
+We integrate by parts:
+
+\[
+  -\int_{\Omega} \nabla\omega\cdot\left(\subTilde{A}\,\nabla u\right)\,d\Omega + \int_{\partial\Omega} \omega\subTilde{A}\nabla u\cdot\Bar{n} \,d\Gamma = -\int_\Omega \omega s \, d\Omega
+\]\-\\
+Let's have a look at the term on $\partial\Omega$
+
+\[
+  \int_{\partial\Omega} \omega\subTilde{A}\nabla u\cdot\Bar{n} \,d\Gamma = \int_{\Gamma_D} \cancelto{^{\footnotesize{\scriptstyle{0} \text{ (by def)}}}}{\omega} \hspace{-1.2cm}\subTilde{A}\nabla u\cdot\Bar{n} \,d\Gamma + \int_{\Gamma_N} \omega\underbrace{\subTilde{A}\nabla u\cdot\Bar{n}}_{q} \,d\Gamma = \int_{\Gamma_N} \omega q \, d\Gamma
+\]
+
+And with that, we get \\
+
+\underline{\textbf{Weak form}} \\
+
+We have to find $u$ such that $u = u_D$ on $\Gamma_D$ and 
+
+\[
+  \int_{\Omega} \nabla\omega\cdot\left(\subTilde{A}\,\nabla u\right)\,d\Omega = \int_\Omega \omega s \, d\Omega + \int_{\Gamma_N} \omega q \, d\Gamma \qquad \forall \omega \text{ such that } \omega = 0 \text{ on } \Gamma_D
+\]
+\newpage
+
+So $$u \in \mathcal{H}_{\Gamma_D}^1(\Omega) = \setb{u\in\mathcal{H}^1(\Omega)\, \big| \, u=u_D \text{ on } \Gamma_D}$$
+
+and $$\omega \in \mathcal{H}_{\Gamma_D,0}^1(\Omega) = \setb{u \in \mathcal{H}^1(\Omega) \,\big| \, u = 0 \text{ on } \Gamma_D}$$ \-\\
+Where $$\mathcal{H}^1(\Omega) = \setb{f\in L^2(\Omega)\, \big| \, \frac{\partial f}{\partial x_i}\in L^2(\Omega)\quad \forall i} \qquad L^2(\Omega) = \setb{f \, \big| \, \int_{\Omega} f^2\,d\Omega < \infty}$$\-\\
+
+Now that we have the weak form, what we do is discretize the domain.
+
+\subsection{Discretisation}
+
+The mesh is defined by a set of points and triangles like:
+
+\begin{figure}[h]
+    \centering
+    \definecolor{xdxdff}{rgb}{0.49019607843137253,0.49019607843137253,1.}
+\definecolor{ududff}{rgb}{0.30196078431372547,0.30196078431372547,1.}
+\begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
+\clip(1.6,-3.5) rectangle (12.9,2.7);
+\draw[line width=1.pt, smooth,samples=100,domain=0.0:0.12] plot[parametric] function{75.25*t**(3.0)+0.0*t**(2.0)+7.52*t+2.02,-84.83*t**(3.0)+0.0*t**(2.0)+10.33*t+0.64};
+\draw[line width=1.pt, smooth,samples=100,domain=0.12:0.24] plot[parametric] function{-96.18*t**(3.0)+59.18*t**(2.0)+0.71*t+2.28,-35.0*t**(3.0)-17.2*t**(2.0)+12.31*t+0.56};
+\draw[line width=1.pt, smooth,samples=100,domain=0.24:0.34] plot[parametric] function{-2.71*t**(3.0)-8.78*t**(2.0)+17.18*t+0.95,112.71*t**(3.0)-124.59*t**(2.0)+38.34*t-1.54};
+\draw[line width=1.pt, smooth,samples=100,domain=0.34:0.41] plot[parametric] function{79.9*t**(3.0)-91.82*t**(2.0)+45.01*t-2.16,75.81*t**(3.0)-87.5*t**(2.0)+25.91*t-0.15};
+\draw[line width=1.pt, smooth,samples=100,domain=0.41:0.5] plot[parametric] function{13.49*t**(3.0)-9.87*t**(2.0)+11.3*t+2.46,70.33*t**(3.0)-80.73*t**(2.0)+23.13*t+0.23};
+\draw[line width=1.pt, smooth,samples=100,domain=0.5:0.56] plot[parametric] function{-51.11*t**(3.0)+87.16*t**(2.0)-37.28*t+10.57,-94.01*t**(3.0)+166.12*t**(2.0)-100.47*t+20.86};
+\draw[line width=1.pt, smooth,samples=100,domain=0.56:0.64] plot[parametric] function{-1.28*t**(3.0)+3.34*t**(2.0)+9.71*t+1.79,-8.34*t**(3.0)+22.01*t**(2.0)-19.67*t+5.76};
+\draw[line width=1.pt, smooth,samples=100,domain=0.64:0.72] plot[parametric] function{-0.48*t**(3.0)+1.79*t**(2.0)+10.71*t+1.58,3.42*t**(3.0)-0.57*t**(2.0)-5.21*t+2.67};
+\draw[line width=1.pt, smooth,samples=100,domain=0.72:0.8] plot[parametric] function{-20.09*t**(3.0)+44.27*t**(2.0)-19.95*t+8.95,-166.5*t**(3.0)+367.38*t**(2.0)-270.81*t+66.58};
+\draw[line width=1.pt, smooth,samples=100,domain=0.8:0.85] plot[parametric] function{-120.37*t**(3.0)+283.57*t**(2.0)-210.3*t+59.42,-105.76*t**(3.0)+222.45*t**(2.0)-155.53*t+36.01};
+\draw[line width=1.pt, smooth,samples=100,domain=0.85:0.94] plot[parametric] function{-143.65*t**(3.0)+343.17*t**(2.0)-261.17*t+73.89,143.87*t**(3.0)-416.7*t**(2.0)+389.96*t-119.17};
+\draw[line width=1.pt, smooth,samples=100,domain=0.0:0.07] plot[parametric] function{393.9*t**(3.0)+0.0*t**(2.0)-2.67*t+2.02,67.04*t**(3.0)+0.0*t**(2.0)-12.5*t+0.64};
+\draw[line width=1.pt, smooth,samples=100,domain=0.07:0.13] plot[parametric] function{-337.89*t**(3.0)+147.54*t**(2.0)-12.59*t+2.24,68.66*t**(3.0)-0.33*t**(2.0)-12.48*t+0.64};
+\draw[line width=1.pt, smooth,samples=100,domain=0.13:0.21] plot[parametric] function{-43.7*t**(3.0)+34.53*t**(2.0)+1.88*t+1.62,-53.54*t**(3.0)+46.61*t**(2.0)-18.49*t+0.9};
+\draw[line width=1.pt, smooth,samples=100,domain=0.21:0.31] plot[parametric] function{-21.13*t**(3.0)+20.17*t**(2.0)+4.93*t+1.41,-46.39*t**(3.0)+42.06*t**(2.0)-17.53*t+0.83};
+\draw[line width=1.pt, smooth,samples=100,domain=0.31:0.44] plot[parametric] function{10.17*t**(3.0)-9.22*t**(2.0)+14.13*t+0.45,60.42*t**(3.0)-58.23*t**(2.0)+13.86*t-2.45};
+\draw[line width=1.pt, smooth,samples=100,domain=0.44:0.56] plot[parametric] function{-16.23*t**(3.0)+25.85*t**(2.0)-1.4*t+2.74,-67.07*t**(3.0)+111.11*t**(2.0)-61.11*t+8.62};
+\draw[line width=1.pt, smooth,samples=100,domain=0.56:0.68] plot[parametric] function{6.95*t**(3.0)-12.91*t**(2.0)+20.2*t-1.27,3.67*t**(3.0)-7.16*t**(2.0)+4.8*t-3.63};
+\draw[line width=1.pt, smooth,samples=100,domain=0.68:0.77] plot[parametric] function{-17.33*t**(3.0)+36.26*t**(2.0)-12.99*t+6.2,-45.12*t**(3.0)+91.66*t**(2.0)-61.9*t+11.38};
+\draw[line width=1.pt, smooth,samples=100,domain=0.77:0.86] plot[parametric] function{50.85*t**(3.0)-120.86*t**(2.0)+107.71*t-24.71,72.61*t**(3.0)-179.67*t**(2.0)+146.53*t-41.99};
+\draw[line width=1.pt, smooth,samples=100,domain=0.86:0.94] plot[parametric] function{-229.77*t**(3.0)+604.9*t**(2.0)-517.97*t+155.09,319.02*t**(3.0)-816.96*t**(2.0)+695.94*t-199.87};
+\draw [line width=1.pt] (3.,1.7)-- (3.42,0.46);
+\draw [line width=1.pt] (2.02,0.64)-- (3.42,0.46);
+\draw [line width=1.pt] (3.42,0.46)-- (1.96,-0.18);
+\draw [line width=1.pt] (3.42,0.46)-- (2.34,-0.82);
+\draw [line width=1.pt] (3.42,0.46)-- (3.74,-0.78);
+\draw [line width=1.pt] (3.74,-0.78)-- (2.34,-0.82);
+\draw [line width=1.pt] (3.74,-0.78)-- (3.16,-1.44);
+\draw [line width=1.pt] (3.42,0.46)-- (4.04,1.2);
+\draw [line width=1.pt] (3.,1.7)-- (4.04,1.2);
+\draw [line width=1.pt] (3.,1.7)-- (2.4942912053784743,1.249476159149053);
+\draw [line width=1.pt] (2.4942912053784743,1.249476159149053)-- (3.42,0.46);
+\draw [line width=1.pt] (3.,1.7)-- (3.712654741773794,2.0071982078016495);
+\draw [line width=1.pt] (3.712654741773794,2.0071982078016495)-- (4.04,1.2);
+\draw [line width=1.pt] (4.56,2.04)-- (4.04,1.2);
+\draw [line width=1.pt] (4.04,1.2)-- (4.56,0.08);
+\draw [line width=1.pt] (4.56,0.08)-- (3.42,0.46);
+\draw [line width=1.pt] (3.74,-0.78)-- (4.56,0.08);
+\draw [line width=1.pt] (4.56,0.08)-- (4.8,-1.18);
+\draw [line width=1.pt] (4.8,-1.18)-- (3.74,-0.78);
+\draw [line width=1.pt] (3.74,-0.78)-- (4.28,-1.96);
+\draw [line width=1.pt] (4.28,-1.96)-- (4.8,-1.18);
+\draw [line width=1.pt] (4.56,0.08)-- (5.14,0.74);
+\draw [line width=1.pt] (4.04,1.2)-- (5.14,0.74);
+\draw [line width=1.pt] (5.14,0.74)-- (4.56,2.04);
+\draw [line width=1.pt] (5.14,0.74)-- (5.62,1.56);
+\draw [line width=1.pt] (5.14,0.74)-- (6.38,0.98);
+\draw [line width=1.pt] (6.38,0.98)-- (5.84,-0.04);
+\draw [line width=1.pt] (5.84,-0.04)-- (5.14,0.74);
+\draw [line width=1.pt] (4.56,0.08)-- (5.84,-0.04);
+\draw [line width=1.pt] (5.84,-0.04)-- (4.8,-1.18);
+\draw [line width=1.pt] (4.8,-1.18)-- (5.113955707955139,-2.29710660508585);
+\draw [line width=1.pt] (5.113955707955139,-2.29710660508585)-- (5.88,-1.66);
+\draw [line width=1.pt] (4.8,-1.18)-- (5.88,-1.66);
+\draw [line width=1.pt] (5.88,-1.66)-- (5.84,-0.04);
+\draw [line width=1.pt] (5.84,-0.04)-- (6.825974218356539,0.669567582001636);
+\draw [line width=1.pt] (6.825974218356539,0.669567582001636)-- (6.72,-0.44);
+\draw [line width=1.pt] (6.72,-0.44)-- (5.84,-0.04);
+\draw [line width=1.pt] (5.88,-1.66)-- (6.72,-0.44);
+\draw [line width=1.pt] (5.88,-1.66)-- (5.78,-2.48);
+\draw [line width=1.pt] (5.78,-2.48)-- (6.62,-1.82);
+\draw [line width=1.pt] (6.62,-1.82)-- (6.439881234920367,-2.543484329382041);
+\draw [line width=1.pt] (6.62,-1.82)-- (5.88,-1.66);
+\draw [line width=1.pt] (6.62,-1.82)-- (6.72,-0.44);
+\draw [line width=1.pt] (6.72,-0.44)-- (7.34,0.4);
+\draw [line width=1.pt] (6.72,-0.44)-- (7.7,-0.82);
+\draw [line width=1.pt] (7.7,-0.82)-- (7.34,0.4);
+\draw [line width=1.pt] (7.7,-0.82)-- (8.06,0.18);
+\draw [line width=1.pt] (7.7,-0.82)-- (9.04,0.);
+\draw [line width=1.pt] (6.62,-1.82)-- (7.7,-0.82);
+\draw [line width=1.pt] (6.62,-1.82)-- (7.18,-2.54);
+\draw [line width=1.pt] (7.18,-2.54)-- (7.7,-0.82);
+\draw [line width=1.pt] (7.7,-0.82)-- (8.62,-2.52);
+\draw [line width=1.pt] (7.8,-1.86)-- (7.18,-2.54);
+\draw [line width=1.pt] (7.8,-1.86)-- (8.62,-2.52);
+\draw [line width=1.pt] (7.8,-1.86)-- (7.7,-0.82);
+\draw [line width=1.pt] (9.04,0.)-- (8.76,-1.14);
+\draw [line width=1.pt] (8.76,-1.14)-- (7.7,-0.82);
+\draw [line width=1.pt] (8.76,-1.14)-- (8.62,-2.52);
+\draw [line width=1.pt] (8.76,-1.14)-- (9.76,-2.54);
+\draw [line width=1.pt] (9.76,-2.54)-- (9.58,-1.32);
+\draw [line width=1.pt] (9.58,-1.32)-- (8.76,-1.14);
+\draw [line width=1.pt] (5.092888033673837,1.8678505213242278)-- (5.14,0.74);
+\draw [line width=1.pt] (4.0628882464444835,2.0625098738473846)-- (4.04,1.2);
+\draw [line width=1.pt] (1.9491558597261478,0.2563349465687549)-- (3.42,0.46);
+\draw [line width=1.pt] (2.0989776852520947,-0.5084240269385761)-- (3.42,0.46);
+\draw [line width=1.pt] (2.7145919118495003,-1.1537811154633195)-- (3.74,-0.78);
+\draw [line width=1.pt] (9.58,-1.32)-- (9.04,0.);
+\draw [line width=1.pt] (9.58,-1.32)-- (10.06,-0.1);
+\draw [line width=1.pt] (10.06,-0.1)-- (10.54,-1.1);
+\draw [line width=1.pt] (10.54,-1.1)-- (9.58,-1.32);
+\draw [line width=1.pt] (10.54,-1.1)-- (10.98,-0.18);
+\draw [line width=1.pt] (10.54,-1.1)-- (11.66,-0.44);
+\draw [line width=1.pt] (11.286580727568996,-0.2608506072605792)-- (10.54,-1.1);
+\draw [line width=1.pt] (10.54,-1.1)-- (9.76,-2.54);
+\draw [line width=1.pt] (10.54,-1.1)-- (10.9,-2.68);
+\draw [line width=1.pt] (10.9,-2.68)-- (11.28,-1.44);
+\draw [line width=1.pt] (11.28,-1.44)-- (10.54,-1.1);
+\draw [line width=1.pt] (11.66,-0.44)-- (11.28,-1.44);
+\draw [line width=1.pt] (11.28,-1.44)-- (12.033119901892462,-0.7777540285797073);
+\draw [line width=1.pt] (12.3,-1.28)-- (11.28,-1.44);
+\draw [line width=1.pt] (11.82,-2.6)-- (11.28,-1.44);
+\draw [line width=1.pt] (12.36,-2.06)-- (11.28,-1.44);
+\draw [line width=1.pt] (12.36,-2.06)-- (11.82,-2.6);
+\draw [line width=1.pt] (12.36,-2.06)-- (12.3,-1.28);
+\draw [line width=1.pt] (11.379210153953807,-2.703128564449173)-- (11.28,-1.44);
+\draw [line width=1.pt] (10.307753337995514,-2.6033413516884565)-- (10.54,-1.1);
+\draw [line width=1.pt] (9.120009503922319,-2.5164145643048688)-- (8.76,-1.14);
+\begin{scriptsize}
+\draw [fill=ududff] (2.02,0.64) circle (2.5pt);
+\draw [fill=ududff] (3.,1.7) circle (2.5pt);
+\draw [fill=ududff] (4.56,2.04) circle (2.5pt);
+\draw [fill=ududff] (5.62,1.56) circle (2.5pt);
+\draw [fill=ududff] (6.38,0.98) circle (2.5pt);
+\draw [fill=ududff] (7.34,0.4) circle (2.5pt);
+\draw [fill=ududff] (8.06,0.18) circle (2.5pt);
+\draw [fill=ududff] (9.04,0.) circle (2.5pt);
+\draw [fill=ududff] (10.06,-0.1) circle (2.5pt);
+\draw [fill=ududff] (10.98,-0.18) circle (2.5pt);
+\draw [fill=ududff] (11.66,-0.44) circle (2.5pt);
+\draw [fill=ududff] (12.3,-1.28) circle (2.5pt);
+\draw [fill=ududff] (12.36,-2.06) circle (2.5pt);
+\draw [fill=ududff] (1.96,-0.18) circle (2.5pt);
+\draw [fill=ududff] (2.34,-0.82) circle (2.5pt);
+\draw [fill=ududff] (3.16,-1.44) circle (2.5pt);
+\draw [fill=ududff] (4.28,-1.96) circle (2.5pt);
+\draw [fill=ududff] (5.78,-2.48) circle (2.5pt);
+\draw [fill=ududff] (7.18,-2.54) circle (2.5pt);
+\draw [fill=ududff] (8.62,-2.52) circle (2.5pt);
+\draw [fill=ududff] (9.76,-2.54) circle (2.5pt);
+\draw [fill=ududff] (10.9,-2.68) circle (2.5pt);
+\draw [fill=ududff] (11.82,-2.6) circle (2.5pt);
+\draw [fill=ududff] (3.42,0.46) circle (2.5pt);
+\draw [fill=ududff] (3.74,-0.78) circle (2.5pt);
+\draw [fill=ududff] (4.04,1.2) circle (2.5pt);
+\draw [fill=xdxdff] (2.4942912053784743,1.249476159149053) circle (2.5pt);
+\draw [fill=xdxdff] (3.712654741773794,2.0071982078016495) circle (2.5pt);
+\draw [fill=ududff] (4.56,0.08) circle (2.5pt);
+\draw [fill=ududff] (4.8,-1.18) circle (2.5pt);
+\draw [fill=ududff] (5.14,0.74) circle (2.5pt);
+\draw [fill=ududff] (5.84,-0.04) circle (2.5pt);
+\draw [fill=xdxdff] (5.113955707955139,-2.29710660508585) circle (2.5pt);
+\draw [fill=ududff] (5.88,-1.66) circle (2.5pt);
+\draw [fill=xdxdff] (6.825974218356539,0.669567582001636) circle (2.5pt);
+\draw [fill=ududff] (6.72,-0.44) circle (2.5pt);
+\draw [fill=ududff] (6.62,-1.82) circle (2.5pt);
+\draw [fill=xdxdff] (6.439881234920367,-2.543484329382041) circle (2.5pt);
+\draw [fill=ududff] (7.7,-0.82) circle (2.5pt);
+\draw [fill=ududff] (7.8,-1.86) circle (2.5pt);
+\draw [fill=ududff] (8.76,-1.14) circle (2.5pt);
+\draw [fill=ududff] (9.58,-1.32) circle (2.5pt);
+\draw [fill=xdxdff] (5.092888033673837,1.8678505213242278) circle (2.5pt);
+\draw [fill=xdxdff] (4.0628882464444835,2.0625098738473846) circle (2.5pt);
+\draw [fill=xdxdff] (1.9491558597261478,0.2563349465687549) circle (2.5pt);
+\draw [fill=xdxdff] (2.0989776852520947,-0.5084240269385761) circle (2.5pt);
+\draw [fill=xdxdff] (2.7145919118495003,-1.1537811154633195) circle (2.5pt);
+\draw [fill=ududff] (10.54,-1.1) circle (2.5pt);
+\draw [fill=xdxdff] (11.286580727568996,-0.2608506072605792) circle (2.5pt);
+\draw [fill=ududff] (11.28,-1.44) circle (2.5pt);
+\draw [fill=xdxdff] (12.033119901892462,-0.7777540285797073) circle (2.5pt);
+\draw [fill=xdxdff] (11.379210153953807,-2.703128564449173) circle (2.5pt);
+\draw [fill=xdxdff] (10.307753337995514,-2.6033413516884565) circle (2.5pt);
+\draw [fill=xdxdff] (9.120009503922319,-2.5164145643048688) circle (2.5pt);
+\end{scriptsize}
+\end{tikzpicture}
+\caption{Domain $\Omega$ of our problem}
+    \label{fig:mesh}
+\end{figure}
+
+$\vdots$
+
