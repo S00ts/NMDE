@@ -249,5 +249,60 @@ We'll approximate the solution $u$ by:
     N_i(x_j) = \delta_{ij} = \begin{cases} 1 \text{ if } i=j \\ 0 \text{ otherwise} \end{cases}
   \]
   where $x_i$ is a node on the mesh.
+  \begin{figure}
+      \centering
+      \definecolor{qqwwzz}{rgb}{0.,0.4,0.6}
+      \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm,scale=1.5]
+        \clip(6.,-3.) rectangle (12.141,-0.5);
+        \draw [line width=1.pt,domain=6.:12.141] plot(\x,{(-32.832-0.*\x)/13.68});
+        \draw [line width=1.pt,color=qqwwzz] (6.02,-2.4)-- (7.72,-2.4);
+        \draw [line width=1.pt,color=qqwwzz] (7.72,-2.4)-- (9.18,-1.);
+        \draw [line width=1.pt,color=qqwwzz] (9.18,-1.)-- (10.66,-2.4);
+        \draw [line width=1.pt,color=qqwwzz] (10.66,-2.4)-- (12.1,-2.4);
+        \draw (8.9,-2.44) node[anchor=north west] {$x_i$};
+        \draw (9.8,-1.1) node[anchor=north west] {$N_i$};
+        \begin{scriptsize}
+        \draw [color=black] (6.02,-2.4)-- ++(-2.0pt,0 pt) -- ++(4.0pt,0 pt) ++(-2.0pt,-2.0pt) -- ++(0 pt,4.0pt);
+        \draw [color=black] (7.72,-2.4)-- ++(-2.0pt,0 pt) -- ++(4.0pt,0 pt) ++(-2.0pt,-2.0pt) -- ++(0 pt,4.0pt);
+        \draw [color=black] (9.18,-2.4)-- ++(-2.0pt,0 pt) -- ++(4.0pt,0 pt) ++(-2.0pt,-2.0pt) -- ++(0 pt,4.0pt);
+        \draw [color=black] (10.66,-2.4)-- ++(-2.0pt,0 pt) -- ++(4.0pt,0 pt) ++(-2.0pt,-2.0pt) -- ++(0 pt,4.0pt);
+        \draw [color=black] (12.1,-2.4)-- ++(-2.0pt,0 pt) -- ++(4.0pt,0 pt) ++(-2.0pt,-2.0pt) -- ++(0 pt,4.0pt);
+        \draw [fill=black] (9.18,-1.) circle (1.0pt);
+        \end{scriptsize}
+      \end{tikzpicture}
+      \caption{$N_i$ are piecewise polynomials with compact support}
+      \label{fig:Ni}
+  \end{figure}
 \end{definition}
 
+Previously, we had to choose $\omega$ as the weighting function. The common approach is with the \textit{Galerkin approximation}: $$\omega = N_i \qquad i = 1,\ldots,n_{\text{nodes}}$$
+
+For every $\omega$ chosen, we have an equation, so we choose as many $\omega$'s as unknowns. \\
+
+Then 
+\[
+  \int_\Omega \nabla N_i \cdot \subTilde{A}\left(\sum_j\nabla N_ju_j\right)\,d\Omega = \int_\Omega N_is\,d\Omega + \int_{\Gamma_N}N_iq\,d\Gamma
+\]
+\[
+  \sum_j\underbrace{\int_\Omega\left(\nabla N_i\cdot\subTilde{A}\nabla N_j\right)}_{K_{ij}}\,d\Omega \,\, u_j = \underbrace{\int_\Omega N_is\,d\Omega + \int_{\Gamma_N}N_iq\,d\Gamma}_{f_i}
+\]
+
+So we end up with the system
+
+\[
+  \sum_jK_{ij}u_j = f_i \qquad i=1,\ldots,n_{\text{nodes}}
+\]
+
+and in matrix form
+\[
+  \subTilde{K}\Bar{u} = \bar{f}
+\]\-\\
+$\subTilde{K}$ is singular, so we need to impose the Dirichlet conditions:
+
+\[
+  \sum_{j=1}^{n_{\text{nodes}}} N_j(x)u_j = \sum_{j\in U}N_j(x)u_j + \sum_{j\in D}N_J(x)u_j \qquad (u_j=u_D(x_j))
+\]
+
+where $\begin{cases}
+    j\in D \text{ if } x_j \in \Gamma_D\\ j\in U \text{ if } x_j\not\in \Gamma_D
+\end{cases}$
