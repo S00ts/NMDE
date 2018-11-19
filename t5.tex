@@ -232,7 +232,7 @@ The mesh is defined by a set of points and triangles like:
 \draw [fill=xdxdff] (9.120009503922319,-2.5164145643048688) circle (2.5pt);
 \end{scriptsize}
 \end{tikzpicture}
-\caption{Mesh of the domain $\Omega$}
+\caption{Mesh of a domain $\Omega$}
     \label{fig:mesh}
 \end{figure}
 
@@ -300,9 +300,170 @@ and in matrix form
 $\subTilde{K}$ is singular, so we need to impose the Dirichlet conditions:
 
 \[
-  \sum_{j=1}^{n_{\text{nodes}}} N_j(x)u_j = \sum_{j\in U}N_j(x)u_j + \sum_{j\in D}N_J(x)u_j \qquad (u_j=u_D(x_j))
+  \sum_{j=1}^{n_{\text{nodes}}} N_j(x)u_j = \sum_{j\in U}N_j(x)u_j + \sum_{j\in D}N_j(x)u_j \qquad (u_j=u_D(x_j))
 \]
 
 where $\begin{cases}
     j\in D \text{ if } x_j \in \Gamma_D\\ j\in U \text{ if } x_j\not\in \Gamma_D
 \end{cases}$
+
+\newpage
+
+\begin{example}
+We'll work with the following 1D problem:
+\[
+  \begin{cases}
+    -u_{xx} = f \\
+    u(0) = 0, \, u(1) = 1
+  \end{cases}
+\]
+
+with 
+  \begin{figure}[h]
+      \centering
+      \definecolor{yqyqyq}{rgb}{0.5019607843137255,0.5019607843137255,0.5019607843137255}
+        \definecolor{qqqqtt}{rgb}{0.,0.,0.2}
+        \definecolor{qqttzz}{rgb}{0.,0.2,0.6}
+        \definecolor{qqwwzz}{rgb}{0.,0.4,0.6}
+        \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=12.0cm,y=4.8cm, scale = 0.8]
+        \begin{axis}[
+        x=12.0cm,y=4.8cm,
+        axis lines=middle,
+        xmin=-0.05,
+        xmax=1.02,
+        ymin=-0.2,
+        ymax=1.12,
+        xtick={-0.0,0.1,...,1.1},
+        ytick={-0.0,1.0,...,1.0},]
+        \clip(-0.05,-0.2) rectangle (1.02,1.12);
+        \draw (0.17342001878856841,1.12) node[anchor=north west] {$N_1$};
+        \draw (0.37535408033237305,1.12) node[anchor=north west] {$N_2$};
+        \draw (0.6716703662933907,1.12) node[anchor=north west] {$N_3$};
+        \draw (0.9306727495778357,1.12) node[anchor=north west] {$\psi$};
+        \draw (-0.04826846181930405,-0.010428039332540924) node[anchor=north west] {$x_0$};
+        \draw (0.175,-0.12) node[anchor=north west] {$x_1$};
+        \draw (0.375,-0.12) node[anchor=north west] {$x_2$};
+        \draw (0.675,-0.12) node[anchor=north west] {$x_3$};
+        \draw (0.975,-0.12) node[anchor=north west] {$x_4$};
+        \draw [line width=1.pt,color=qqwwzz] (-2.501762441637411E-4,0.)-- (0.1993279293434915,0.9966396467174575);
+        \draw [line width=1.pt,color=qqwwzz] (0.1993279293434915,0.9966396467174575)-- (0.39890603493114674,0.);
+        \draw [line width=1.pt,color=qqttzz] (0.1993279293434915,0.)-- (0.40112356943767624,0.9962547685410791);
+        \draw [line width=1.pt,color=qqttzz] (0.40112356943767624,0.9962547685410791)-- (0.7004907278191591,0.0016357593971971784);
+        \draw [line width=1.pt,color=qqttzz] (0.7004907278191591,0.0016357593971971784)-- (1.0508611798508205,0.);
+        \draw [line width=1.pt,color=qqwwzz] (0.39890603493114674,0.)-- (0.7001812029617619,0.0026641263985551777);
+        \draw [line width=1.pt,color=qqqqtt] (0.6982731933126296,0.9942439777087653)-- (0.3987606852809381,7.258372535798863E-4);
+        \draw [line width=1.pt,color=qqqqtt] (0.6982731933126296,0.9942439777087653)-- (1,2.588335028239439E-4);
+        \draw [line width=1.pt,color=qqqqtt] (0.3985896937652761,0.0015797231207659995)-- (-0.0556885389074013,0.);
+        \draw [line width=1.pt,color=yqyqyq] (0.7003484276096387,0.0021085383558490656)-- (1.0222763403956587,1.0742544679855293);
+        \end{axis}
+        \end{tikzpicture}
+      \caption{}
+      \label{fig:1D FEM}
+  \end{figure}
+  
+First we'll write the weak form to approximate $u(x)$ by functions in $\mathcal{H}_0^1(0,1)$ to get 
+\begin{equation}\label{eq:FEMex}
+    u(x) \simeq u_1N_1(x) + u_2N_2(x) + u_3N_3(x) + \psi(x)
+\end{equation}
+
+Let's proceed
+
+\[
+  -\int_0^1u_{xx}\omega \, dx = \int_0^1 f\omega \, dx
+\]
+
+We integrate the left hand side by parts:
+
+\[
+  -\int_0^1u_{xx}\omega \, dx = -\big[\omega u_x\big]_0^1 + \int_0^1u_x\omega_x\,dx
+\]\-\\
+$\omega \in \mathcal{H}_0^1(0,1) \implies \omega(0) = \omega(1) = 0\implies \omega u_x\big|_0^1=0$\\
+
+\underline{\textbf{Weak form}}\\
+
+We have to find u such that $u(0) = 0$, $u(1) = 1$ and $$\int_0^1u_x\omega_x\,dx = \int_0^1f\omega \, dx \qquad \forall\omega\in\mathcal{H}_0^1(0,1)$$
+
+\newpage
+
+Let's rewrite $\int_0^1u_x\omega_x\,dx$ using our approximation of u (\ref{eq:FEMex}):
+
+\[
+  \int_0^1 u_x\omega_x\, dx = \int_0^1\left(u_1N_1'(x) + u_2N_2'(x) + u_3N_3'(x) + \psi'(x)\right)\cdot N_i'(x)\,dx \qquad i=1,2,3
+\]
+
+Thus
+
+\[
+  \sum_{j=1}^3 u_j\underbrace{\int_0^1 N_j'(x)\cdot N_i'(x) \,dx}_{K_{ij}} = \underbrace{\int_0^1fN_i(x)\,dx - \int_0^1\psi'(x)N_i'(x)}_{f_i} \qquad i=1,2,3
+\]\-\\
+
+Let's find the explicit form of the $N_i's$ with the discretisation in Figure \ref{fig:1D FEM}:\\
+
+    $N_1(x)=\begin{cases}
+      5x                       &0\leq x\leq 0.2\\
+      -5(x-0.4)                &0.2\leq x\leq0.4\\
+      0  \qquad   \qquad \quad &\text{otherwise}
+    \end{cases}$\\\-\\
+    
+    $N_2(x)=\begin{cases} 
+      5(x-0.2)                  &0.2\leq x \leq 0.4 \\
+      -\frac{10}{3}(x-0.7)      &0.4\leq x \leq 0.7 \\
+      0  \qquad   \qquad \quad  &\text{otherwise}
+    \end{cases}$\\\-\\
+    
+    $N_3(x)=\begin{cases} 
+      \frac{10}{3}(x-0.4)       &0.4\leq x \leq 0.7 \\
+      -\frac{10}{3}(x-1)        &0.7\leq x \leq 1 \\
+      0  \qquad   \qquad \quad  &\text{otherwise}
+    \end{cases}$\\\-\\
+  
+Now we can find the $K_{ij}$'s:
+
+$\displaystyle{
+  K_{11} = \int_0^1 N_1'(x)\cdot N_1'(x) \, dx = \int_0^{0.2} 5\cdot5\,dx + \int_{0.2}^{0.4} (-5)\cdot(-5)\,dx = 10}
+$\\\-\\
+$\displaystyle{
+  K_{12}=K_{21} = \int_{0.2}^{0.4}(-5)\cdot5 \,dx = -5}
+$\\\-\\
+$\displaystyle{
+  K_{13} = K_{31} = 0}
+$\\\-\\
+$\displaystyle{
+  K_{22} = \int_{0.2}^{0.4}5\cdot5\,dx + \int_{0.4}^{0.7}\frac{-10}{3}\cdot\frac{-10}{3}\,dx = \frac{25}{3}}
+$\\\-\\
+$\displaystyle{
+  K_{23}=K_{32} = \int_{0.4}^{0.7}\frac{-10}{3}\cdot\frac{10}{3}\,dx = -\frac{10}{3}}
+$\\\-\\
+$\displaystyle{
+  K_{33} = \int_{0.4}^{0.7}\frac{10}{3}\cdot\frac{10}{3}\,dx + \int_{0.7}^1 \frac{-10}{3}\cdot\frac{-10}{3}\,dx = \frac{20}{3}}
+$\\\-\\
+\newpage
+
+So 
+
+\[
+  \subTilde{K} =
+  \begin{pmatrix*}[r]
+    10 & -5            & 0\\
+    -5 & \frac{25}{3}  & -\frac{10}{3}\\
+    0  & -\frac{10}{3} & \frac{20}{3}
+  \end{pmatrix*}
+\]
+
+and the system we have to solve is:
+
+\[
+  \begin{pmatrix*}[r]
+    10 & -5            & 0\\
+    -5 & \frac{25}{3}  & -\frac{10}{3}\\
+    0  & -\frac{10}{3} & \frac{20}{3}
+  \end{pmatrix*}
+  \begin{pmatrix*}[r]
+    u_1\\ u_2 \\ u_3
+  \end{pmatrix*} =
+  \begin{pmatrix*}[r]
+    f_1\\f_2\\f_3
+  \end{pmatrix*}
+\]
+
+\end{example}
