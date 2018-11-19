@@ -232,9 +232,22 @@ The mesh is defined by a set of points and triangles like:
 \draw [fill=xdxdff] (9.120009503922319,-2.5164145643048688) circle (2.5pt);
 \end{scriptsize}
 \end{tikzpicture}
-\caption{Domain $\Omega$ of our problem}
+\caption{Mesh of the domain $\Omega$}
     \label{fig:mesh}
 \end{figure}
 
-$\vdots$
+We want the nodal values of the solution noted $u_i$ ($i = 1,\ldots,n_{\text{nodes}}$).\\
+
+We'll approximate the solution $u$ by:
+
+\[
+  u \simeq \sum_i N_i(x)u_i
+\]
+\begin{definition}
+  We define the \textbf{shape function} $N_i(x)$ as
+  \[
+    N_i(x_j) = \delta_{ij} = \begin{cases} 1 \text{ if } i=j \\ 0 \text{ otherwise} \end{cases}
+  \]
+  where $x_i$ is a node on the mesh.
+\end{definition}
 
