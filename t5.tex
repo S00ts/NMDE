@@ -355,6 +355,14 @@ with
         \draw [line width=1.pt,color=qqqqtt] (0.6982731933126296,0.9942439777087653)-- (1,2.588335028239439E-4);
         \draw [line width=1.pt,color=qqqqtt] (0.3985896937652761,0.0015797231207659995)-- (-0.0556885389074013,0.);
         \draw [line width=1.pt,color=yqyqyq] (0.7003484276096387,0.0021085383558490656)-- (1.0222763403956587,1.0742544679855293);
+        \draw [<->,line width=0.5 pt] (0.025,0.05) -- (0.19,0.05);
+        \draw [<->,line width=0.5 pt] (0.22,0.05) -- (0.38,0.05);
+        \draw [<->,line width=0.5 pt] (0.42,0.05) -- (0.68,0.05);
+        \draw [<->,line width=0.5 pt] (0.72,0.05) -- (0.98,0.05);
+        \draw (0.11,0.17) node[anchor=north] {$h_1$};
+        \draw (0.3,0.17) node[anchor=north] {$h_2$};
+        \draw (0.55,0.17) node[anchor=north] {$h_3$};
+        \draw (0.85,0.17) node[anchor=north] {$h_4$};
         \end{axis}
         \end{tikzpicture}
       \caption{}
@@ -363,7 +371,7 @@ with
   
 First we'll write the weak form to approximate $u(x)$ by functions in $\mathcal{H}_0^1(0,1)$ to get 
 \begin{equation}\label{eq:FEMex}
-    u(x) \simeq u_1N_1(x) + u_2N_2(x) + u_3N_3(x) + \psi(x)
+    u(x) \simeq u^h =  u_1N_1(x) + u_2N_2(x) + u_3N_3(x) + \psi(x)
 \end{equation}
 
 Let's proceed
@@ -381,7 +389,7 @@ $\omega \in \mathcal{H}_0^1(0,1) \implies \omega(0) = \omega(1) = 0\implies \ome
 
 \underline{\textbf{Weak form}}\\
 
-We have to find u such that $u(0) = 0$, $u(1) = 1$ and $$\int_0^1u_x\omega_x\,dx = \int_0^1f\omega \, dx \qquad \forall\omega\in\mathcal{H}_0^1(0,1)$$
+We have to find $u$ such that $u(0) = 0$, $u(1) = 1$ and $$\int_0^1u_x\omega_x\,dx = \int_0^1f\omega \, dx \qquad \forall\omega\in\mathcal{H}_0^1(0,1)$$
 
 \newpage
 
@@ -464,6 +472,66 @@ and the system we have to solve is:
   \begin{pmatrix*}[r]
     f_1\\f_2\\f_3
   \end{pmatrix*}
+\]\-\\
+Let's find a general way to compute $\subTilde{K}$ with discretisations like the one in Figure \ref{fig:1D FEM}:\\
+
+$\displaystyle{K_{11} = \int_0^1 N_1'N_1' \, dx = \int_{x_0}^{x_1} \left(\frac{1}{h_1}\right)^2\,dx + \int_{x_1}^{x_2} \left(-\frac{1}{h_2}\right)^2\,dx = \frac{1}{h_1} + \frac{1}{h_2}}$ \\\-\\
+$\displaystyle{K_{12} = K_{21} = \int_0^1 N_1'N_2' \, dx = \int_{x_1}^{x_2} -\frac{1}{h_2}\cdot \frac{1}{h_2}\,dx = -\frac{1}{h_2}}$ \\\-\\
+$\vdots$\\
+\[
+  \implies 
+  \subTilde{K} =
+  \begin{pmatrix*}[c]
+    \frac{1}{h_1} + \frac{1}{h_2} & -\frac{1}{h_2}                 & 0                             \\
+    -\frac{1}{h_2}                & \frac{1}{h_2} + \frac{1}{h_3}  & -\frac{1}{h_3}                \\
+    0                             & -\frac{1}{h_3}                 & \frac{1}{h_3} + \frac{1}{h_4}
+  \end{pmatrix*}
+\]\-\\
+
+The solution needs to verify the Dirichlet conditions, so we'll impose $$\psi = 0\cdot N_0 + 1\cdot N_4 = N_4$$
+
+Assuming $f$ constant, the system we have to solve is
+
+\[
+  \begin{pmatrix*}[r]
+    10 & -5            & 0\\
+    -5 & \frac{25}{3}  & -\frac{10}{3}\\
+    0  & -\frac{10}{3} & \frac{20}{3}
+  \end{pmatrix*}
+  \begin{pmatrix*}[r]
+    u_1\\ u_2 \\ u_3
+  \end{pmatrix*} =
+  \begin{pmatrix*}[r]
+    f\cdot \frac{h_1 + h_2}{2}\\f\cdot \frac{h_2 + h_3}{2}\\f\cdot \frac{h_3 + h_4}{2}
+  \end{pmatrix*} + 
+  \begin{pmatrix*}[c]
+    0\\0\\ -\left(\frac{-1}{h_4}\right)
+  \end{pmatrix*}
+\]
+$$\text{\rotatebox{270}{$\leadsto$}}$$
+\[
+  \begin{pmatrix*}[r]
+    10 & -5            & 0\\
+    -5 & \frac{25}{3}  & -\frac{10}{3}\\
+    0  & -\frac{10}{3} & \frac{20}{3}
+  \end{pmatrix*}
+  \begin{pmatrix*}[r]
+    u_1\\ u_2 \\ u_3
+  \end{pmatrix*} =
+  f\cdot\begin{pmatrix*}[c]
+    0.2\\0.25\\0.3
+  \end{pmatrix*} + 
+  \begin{pmatrix*}[c]
+    0\\0\\ \frac{10}{3}
+  \end{pmatrix*}
+\]
+
+Taking for example $f=-2$, $$\Bar{u} = (0.04,\, 0.16,\,0.49)$$
+
+And the approximation of the solution is
+
+\[
+  u^h(x) = \sum_{i=0}^4u_iN_i(x) = 0.04N_i(x) + 0.16N_2(x) + 0.49N_3(x) + N_4
 \]
 
 \end{example}
