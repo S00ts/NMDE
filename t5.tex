@@ -1,6 +1,8 @@
 \section{Numerical Solution of PDEs with the Finite Elements Method}
 
-\subsection{From the strong form to the weak form}
+\subsection{The Finite Elements Method (FEM)}
+
+\subsubsection{From the strong form to the weak form}
 
 Given the following problem in \textbf{strong form}: 
 
@@ -28,7 +30,7 @@ We'll derive the equivalent weak form of the problem using \textbf{weighted resi
 
 Where $\omega$ is the \textbf{test function} (or \textbf{weighting function}). \\
 
-We integrate by parts:
+We integrate by parts (in particular we use \href{https://en.wikipedia.org/wiki/Green's_identities}{Green's first identity}):
 
 \[
   -\int_{\Omega} \nabla\omega\cdot\left(\subTilde{A}\,\nabla u\right)\,d\Omega + \int_{\partial\Omega} \omega\subTilde{A}\nabla u\cdot\Bar{n} \,d\Gamma = -\int_\Omega \omega s \, d\Omega
@@ -57,7 +59,7 @@ Where $$\mathcal{H}^1(\Omega) = \setb{f\in L^2(\Omega)\, \big| \, \frac{\partial
 
 Now that we have the weak form, what we do is discretize the domain.
 
-\subsection{Discretisation}
+\subsubsection{Discretisation}
 
 The mesh is defined by a set of points and triangles like:
 
@@ -297,7 +299,7 @@ and in matrix form
 \[
   \subTilde{K}\Bar{u} = \bar{f}
 \]\-\\
-$\subTilde{K}$ is singular, so we need to impose the Dirichlet conditions:
+The \textbf{stiffness matrix} $\subTilde{K}$ is singular, so we need to impose the Dirichlet conditions:
 
 \[
   \sum_{j=1}^{n_{\text{nodes}}} N_j(x)u_j = \sum_{j\in U}N_j(x)u_j + \sum_{j\in D}N_j(x)u_j \qquad (u_j=u_D(x_j))
@@ -662,4 +664,85 @@ f\cdot
 \]\-\\
 And imposing the boundary conditions ($u_0 = 0, \, u_4 = 1$) we obtain the exact same \text{system (\ref{eq:sys5.2}).}
 
+\end{example}
+\-\\
+Now, we'll see with an example how to assemble the stiffness matrix in 2D:
+
+\begin{example}
+  
+\end{example}
+
+\newpage
+
+\subsection{FEM analysis}
+
+\begin{remark}
+  In this section we'll only see the 1D case, but the analysis works for higher dimensions.
+\end{remark}
+
+Let's work with the following problem:
+
+\begin{equation}\label{eq:LAXexample}
+    \begin{cases}
+      \Delta u = -s &\text{ in } \Omega \\
+      u = 0         &\text{ on } \partial\Omega
+    \end{cases}
+\end{equation}
+
+\underline{\textbf{Weak form}}\\
+
+We have to find $u\in \mathcal{H}_0^1(\Omega)$ such that
+
+\[
+  \underbrace{\int_\Omega \nabla\omega\nabla u \, d\Omega}_{a(\omega, u)} = \underbrace{\int_{\Omega} s\omega \, d\Omega}_{l(\omega)} \qquad \forall \omega \in \mathcal{H}_0^1(\Omega)
+\]
+
+\underline{\textbf{Discrete problem}}\\
+
+Find $u^h \in V^h$,$\,\,$ ($V^h \subseteq \mathcal{H}_0^1(\Omega)$) $\,\,$ such that 
+
+\[
+  a(\omega^h, u^h) = l(\omega^h) \qquad \forall \omega^h \in V^h
+\]
+
+We want to compute the error $e = u - u^h$
+
+\[
+  \norm{u-u^h} \leq C\cdot \underset{v^h\in V^h}{\text{inf}} \norm{u-v^h} \leq C\cdot\norm{u-\Pi u}
+\]
+
+where $\Pi u$ is the projection of $u$. In FEM it's the \textit{interpolating polynomial}.\\
+\begin{lemma}[Lax-Milgram]\-\\
+  Let $V$ be a Hilbert space. Let $$a: V\times V \to \real$$ a continuous, coercive and bilinear form
+  Given the weak form:
+  \begin{equation}\label{eq:LAXweak}
+      \text{Find } u \in V \text{ such that } a(\omega, u) = l(\omega) \qquad \forall \omega\in V
+  \end{equation}
+  Then (\ref{eq:LAXweak}) has a unique solution and $$\norm{u}_V \leq \frac{1}{\alpha}\norm{l}_V$$
+  
+  Here,
+  \begin{itemize}
+      \item[] $a$ is \textbf{continuous} if $\exists M>0$ such that $\abs{a(\omega, u)} \leq M\norm{u}_V\norm{\omega}_V$
+      
+      \item[] $a$ is \textbf{coercive} if $\exists \alpha>0$ such that $a(u,u) \geq \alpha\norm{u}_V^2$
+  \end{itemize}
+  
+  If moreover $a(\cdot, \cdot)$ is symmetric, then (\ref{eq:LAXweak}) is equivalent to $$      \text{Find } u \in V \text{ such that } J(u) = \underset{v\in V}{\text{min }}J(v), \text{ with } J(v) = \frac{1}{2}a(v,v) + l(v)$$
+\end{lemma}
+
+\newpage
+
+\begin{example}
+  Let's see that for problem (\ref{eq:LAXexample}), the hypothesis of Lax-Milgram's lemma holds: \\
+  
+  Of course, $a$ is a bilinear form. Then, we also want to see that $a(\omega,u) = \int_{\Omega}\nabla \omega \nabla u \, d\Omega$ is continuous and coercive.\\
+  
+  We work in $V\subseteq \mathcal{H}_0^1(\Omega)$ with the norm $\norm{u}_V := \norm{\nabla u}$, and $<u,v> = \displaystyle{\int} uv$. Then
+  
+\begin{align*}
+    &\abs{a(\omega, u)} = \abs{\int_{\Omega}\nabla \omega \nabla u \, d\Omega} = \abs{<\nabla\omega,\nabla u>} \underset{\substack{\text{Cauchy-}\\\text{Schwarz}}}{\leq} \norm{\nabla\omega}\cdot\norm{\nabla u} = \norm{\omega}_V\cdot\norm{u}_V \implies a \text{ continuous}\\
+    &a(u,u) = \int_{\Omega} (\nabla u)^2 \, d\Omega = \norm{u}_V^2. \text{ In particular } a(u,u) \geq \norm{u}_V^2 \implies a \text{ coercive}
+\end{align*}
+
+  
 \end{example}
