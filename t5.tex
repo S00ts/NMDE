@@ -712,8 +712,8 @@ We want to compute the error $e = u - u^h$
 \]
 
 where $\Pi u$ is the projection of $u$. In FEM it's the \textit{interpolating polynomial}.\\
-\begin{lemma}[Lax-Milgram]\-\\
-  Let $V$ be a Hilbert space. Let $$a: V\times V \to \real$$ a continuous, coercive and bilinear form
+\begin{lemma}[Lax-Milgram]\label{LMthm}\-\\
+  Let $V$ be a Hilbert space. Let $$a: V\times V \to \real$$ a continuous, coercive and bilinear form.\\
   Given the weak form:
   \begin{equation}\label{eq:LAXweak}
       \text{Find } u \in V \text{ such that } a(\omega, u) = l(\omega) \qquad \forall \omega\in V
@@ -743,6 +743,76 @@ where $\Pi u$ is the projection of $u$. In FEM it's the \textit{interpolating po
     &\abs{a(\omega, u)} = \abs{\int_{\Omega}\nabla \omega \nabla u \, d\Omega} = \abs{<\nabla\omega,\nabla u>} \underset{\substack{\text{Cauchy-}\\\text{Schwarz}}}{\leq} \norm{\nabla\omega}\cdot\norm{\nabla u} = \norm{\omega}_V\cdot\norm{u}_V \implies a \text{ continuous}\\
     &a(u,u) = \int_{\Omega} (\nabla u)^2 \, d\Omega = \norm{u}_V^2. \text{ In particular } a(u,u) \geq \norm{u}_V^2 \implies a \text{ coercive}
 \end{align*}
-
   
 \end{example}
+
+
+\begin{lemma}[Céa]\-\\
+  The Galerkin method is \textbf{strongly consistent}. That is
+  
+  \[
+    a(v^h, \underbrace{u-u^h}_e) = 0 \quad \forall v^h \in V^h
+  \]
+\end{lemma}
+
+\begin{remark}
+  We are assuming that $a$ verifies the hypothesis of Lax-Milgram's lemma (\ref{LMthm})
+\end{remark}
+
+
+
+\begin{demo}
+  Evaluating the weak form (\ref{eq:LAXweak}) on a subspace $V^h \subset V$, it holds
+  \begin{align}
+      a(v^h,u) = l(v^h)\label{eq:cea1}\\ 
+      a(v^h,u^h) = l(v^h) \label{eq:cea2}
+  \end{align}
+  
+  Subtracting (\ref{eq:cea1}) - (\ref{eq:cea2}) we obtain the desired result
+  \[
+    a(v^h, u-u^h) = 0
+  \]
+  Where we used that $a$ is bilinear. \\\qed
+\end{demo}
+
+\begin{corollary}
+  In the same conditions as before, we have the following bound:
+  \[
+    \norm{u-u^h}_V \leq \frac{M}{\alpha} \norm{u-v^h}_V \quad \forall v^h \in V^h
+  \]
+\end{corollary}
+
+\begin{demo}
+  \begin{align*}
+      a(e,e) &= a(u-u^h, u-u^h) =^{(*)}\\
+             &= a(u-u^h, u-v^h) + \cancelto{\text{\footnotesize{$0$ (Céa's Lemma)}}}{a(u-u^h, v^h-u^h)} \hspace{-2.75cm}\leq^{(**)}\\[12pt]
+             &\leq M\norm{u-u^h}_V\norm{u-v^h}_V
+  \end{align*}
+  In (*) we added and subtracted $v^h$ and used that $a$ is a bilinear form, and in (**) we used that $a$ is continuous. \\
+  
+  Now, as $a$ is coercive, we also have $$a(e,e) = a(u-u^h,u-u^h)\leq \alpha \norm{u-u^h}_V^2$$
+  \[
+    \implies \alpha\norm{u-u^h}_V^2\leq M\norm{u-u^h}_V\norm{u-v^h}_V
+  \]
+  \[
+    \implies \norm{u-u^h}_V \leq \frac{M}{\alpha}\norm{u-v^h}_V
+  \]
+  \qed
+\end{demo}
+
+This result means that the Galerkin approximation $u^h$ is the best we can obtain (up to a constant depending only on the form $a$).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
