@@ -735,7 +735,7 @@ where $\Pi u$ is the projection of $u$. In FEM it's the \textit{interpolating po
 \begin{example}
   Let's see that for problem (\ref{eq:LAXexample}), the hypothesis of Lax-Milgram's lemma holds: \\
   
-  Of course, $a$ is a bilinear form. Then, we also want to see that $a(\omega,u) = \int_{\Omega}\nabla \omega \nabla u \, d\Omega$ is continuous and coercive.\\
+  Of course, $a$ is a bilinear form. Then, we also want to see that $a(\omega,u) = \displaystyle{\int_{\Omega}}\nabla \omega \nabla u \, d\Omega$ is continuous and coercive.\\
   
   We work in $V\subseteq \mathcal{H}_0^1(\Omega)$ with the norm $\norm{u}_V := \norm{\nabla u}$, and $<u,v> = \displaystyle{\int} uv$. Then
   
@@ -788,7 +788,7 @@ where $\Pi u$ is the projection of $u$. In FEM it's the \textit{interpolating po
              &= a(u-u^h, u-v^h) + \cancelto{\text{\footnotesize{$0$ (Céa's Lemma)}}}{a(u-u^h, v^h-u^h)} \hspace{-2.75cm}\leq^{(**)}\\[12pt]
              &\leq M\norm{u-u^h}_V\norm{u-v^h}_V
   \end{align*}
-  In (*) we added and subtracted $v^h$ and used that $a$ is a bilinear form, and in (**) we used that $a$ is continuous. \\
+  In $(*)$ we added and subtracted $v^h$ and used that $a$ is a bilinear form, and in $(**)$ we used that $a$ is continuous. \\
   
   Now, as $a$ is coercive, we also have $$a(e,e) = a(u-u^h,u-u^h)\leq \alpha \norm{u-u^h}_V^2$$
   \[
@@ -800,7 +800,104 @@ where $\Pi u$ is the projection of $u$. In FEM it's the \textit{interpolating po
   \qed
 \end{demo}
 
-This result means that the Galerkin approximation $u^h$ is the best we can obtain (up to a constant depending only on the form $a$).
+This result means that the Galerkin approximation $u^h$ is the best we can obtain (up to a constant depending only on the form $a$).\\\-\\
+
+Now our objective is to find an error bound for the FEM solution. We'll use a bound for the interpolation error (We'll do it with 1D FEM for simplicity).\\
+
+We have the domain $\Omega = (a,b)$. Given $x_0 = a, x_1, x_2, \ldots, x_{N-1}, x_N = b$ such that $$x_0 = a < x_1 < x_2 < \ldots < x_{N-1} < x_N = b$$ we define $\tau_h$ as the partition of $(a,b)$ in elements $K_j = (x_{j-1},x_j)\quad$ (with $j=1,2,\ldots,N$)\\
+
+and $$X_h^p = \setb{v^h \in \mathcal{C}^0(\Omega) \,:\, v^h\big|_{K_j}\in\mathbb{P}^p(K_j)} \qquad \varphi_i(x_j) = \delta_{ij}$$
+
+where $\mathbb{P}^p$ are polynomials of degree $p$.
+
+\begin{theorem}
+  Let $v\in\mathcal{H}^{p+1}(I)$ and $\Pi_h^p v \in X_h^p$ its interpolating function. Then
+  \[
+    \abs{v-\Pi_h^p v}_{\mathcal{H}^k(I)} \leq C_{p,k}\cdot h^{p+1-k}\cdot\abs{v}_{\mathcal{H}^{p+1}(I)} \qquad k=0,1,\ldots
+  \]
+  
+  In our case, for $p=1$,
+  $$\Pi_h^1 v \in X_h^1(\Omega)$$
+  $$\Pi_h^1 v(x_j) = v(x_j) \quad j=0,\ldots,N$$
+  
+  \[
+    \varphi_j(x) = \begin{cases}
+      \frac{x-x_{j-1}}{x_j - x_{j-1}}   &\text{ if } x \in K_j=(x_{j-1},x_j)\\[8pt]
+      \frac{x-x_{j}}{x_{j+1} - x_j} &\text{ if } x\in K_{j+1} = (x_j,x_{j+1}) \qquad \text{ (Lagrange basis functions)} \\[8pt]
+      0 &\text{ otherwise}
+  \end{cases}
+  \]
+  
+  $$\Pi_h^1 v = \sum_{j=0}^N v(x_j)\varphi_j(x)$$
+\end{theorem}
+
+\begin{demo}
+  ($p=1$)\\
+  \vspace{-0.5cm}
+  $$e=v-\Pi_h^1v$$
+  
+  Note that $e(x_j) = 0 \underset{Rolle}{\implies} e'(\xi_j)=0$ with $\xi_j \in K_j$\\
+  
+  In $\displaystyle{K_j,\, e'(x) = \int_{\xi_j}^x e''(s)\,ds = \int_{\xi_j}^x v''(s)\,ds}$, and so
+  \[
+    \abs{e'(x)} \leq \int_{x_{j-1}}^{x_j} \abs{v''(s)}\,ds \underset{C-S}{\leq} \underbrace{\left(\int_{x_{j-1}}^{x_j}1\,ds\right)^{\frac{1}{2}}}_{h^{\frac{1}{2}}}\left(\int_{x_{j-1}}^{x_j} \abs{v''(s)}^2 \, ds\right)^{\frac{1}{2}}
+  \]
+  
+  We square both sides
+  
+  \[
+    \abs{e'(x)}^2 \leq h \int_{x_{j-1}}^{x_j} \abs{v''(s)}^2 \, ds
+  \]
+  
+  and integrate in $K_j$
+  
+  \[
+    \int_{x_{j-1}}^{x_j}\abs{e'(x)}^2 \leq h\cdot \hspace{-2.6cm}\underset{\substack{\Big\uparrow \\ \text{Comes from integrating}\\\int_{x_{j-1}}^{x_j}\int_{x_{j-1}}^{x_j}(\,\,) = \int_{x_{j-1}}^{x_j}(\,\,)\,\cdot\,\underbrace{(x_j - x_{j-1})}_{h}}}{h}\hspace{-2.6cm}\cdot \int_{x_{j-1}}^{x_j} \abs{v''(s)}^2 \, ds \tag{$*$}
+  \]
+  
+  Then we have $e(x) = \displaystyle{\int_{x_{j-1}}^x e'(s)\,ds}$ for $x\in K_j$. Thus
+  
+  \[
+    \abs{e(x)} \leq \int_{x_{j-1}}^{x_j}\abs{e'(s)}\,ds \leq h^{\frac{1}{2}}\left(\int_{x_{j-1}}^{x_j}\abs{e'(s)}^2\,ds\right)^{\frac{1}{2}} \overset{(*)}{\leq} h^{\frac{1}{2}}\cdot h \cdot \left(\int_{x_{j-1}}^{x_j}\abs{v''(s)}^2\,ds\right)^{\frac{1}{2}}
+  \]\-\\
+  and again, if we square and integrate both sides, we end up with
+  
+  \[
+    \int_{x_{j-1}}^{x_j}\abs{e(x)}^2 \leq h^4\int_{x_{j-1}}^{x_j}\abs{v''(s)}^2\,ds
+  \]
+  
+  To summarize, we have
+  \begin{align*}
+      \int_{K_j}\abs{e(x)}^2 &\leq h^4\int_{K_j}\abs{v''(s)}^2\,ds\\
+      \int_{K_j}\abs{e'(x)}^2 &\leq h^2\int_{K_j}\abs{v''(s)}^2\,ds
+  \end{align*}
+  
+  and if we sum for all the elements,
+  \begin{align*}
+      \norm{e(x)_{\mathcal{L}_2}^2} &\leq h^4\abs{v}_{\mathcal{H}^2}^2 \implies \norm{e}_{\mathcal{L}_2} \leq C_1h^2\\[10pt]
+      \abs{e(x)_{\mathcal{H}^1}^2} &\leq h^2\abs{v}_{\mathcal{H}^2}^2 \implies \abs{e}_{\mathcal{H}^1} \leq C_2h
+  \end{align*}
+  \qed
+\end{demo}
+
+\begin{remark}
+  In $\mathcal{H}^p(\Omega)$ we have \begin{itemize}
+      \item[-] Norm: $\norm{v}_{\mathcal{H}^p} = \sum\limits_{k=0}^p \abs{v}_{\mathcal{H}^k}$
+      \item[-] Seminorm: $\displaystyle{\abs{v}_{\mathcal{H}^k}^2 = \int_{\Omega}\left(\frac{D^kv}{Dx^k}\right)^2\, d\Omega}$
+  \end{itemize}
+\end{remark}
+
+\begin{corollary}
+  \begin{align*}
+      &\norm{u-u^h}_{\mathcal{H}^p(\Omega)} \leq \frac{M}{\alpha}\inf_{v^h\in\mathcal{H}_0^p(\Omega)}\norm{u-v^h}_{\mathcal{H}_0^p(\Omega)} \hspace{-0.4cm}\underset{\substack{\big\uparrow \\ u^h = \Pi^hu}}{\leq} \hspace{-0.4cm}\frac{M}{\alpha} Ch^p\\
+      &\norm{u-u^h}_{\mathcal{L_2}} \leq Kh^{p+1}
+  \end{align*}
+\end{corollary}
+
+
+
+
+
 
 
 
