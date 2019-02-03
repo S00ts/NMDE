@@ -732,19 +732,19 @@ where $\Pi u$ is the projection of $u$. In FEM it's the \textit{interpolating po
 
 \newpage
 
-\begin{example}
-  Let's see that for problem (\ref{eq:LAXexample}), the hypothesis of Lax-Milgram's lemma holds: \\
+% \begin{example}
+%   Let's see that for problem (\ref{eq:LAXexample}), the hypothesis of Lax-Milgram's lemma holds: \\
   
-  Of course, $a$ is a bilinear form. Then, we also want to see that $a(\omega,u) = \displaystyle{\int_{\Omega}}\nabla \omega \nabla u \, d\Omega$ is continuous and coercive.\\
+%   Of course, $a$ is a bilinear form. Then, we also want to see that $a(\omega,u) = \displaystyle{\int_{\Omega}}\nabla \omega \nabla u \, d\Omega$ is continuous and coercive.\\
   
-  We work in $V\subseteq \mathcal{H}_0^1(\Omega)$ with the norm $\norm{u}_V := \norm{\nabla u}$, and $<u,v> = \displaystyle{\int} uv$. Then
+%   We work in $V\subseteq \mathcal{H}_0^1(\Omega)$ with the norm $\norm{u}_V := \norm{\nabla u}$, and $<u,v> = \displaystyle{\int} uv$. Then
   
-\begin{align*}
-    &\abs{a(\omega, u)} = \abs{\int_{\Omega}\nabla \omega \nabla u \, d\Omega} = \abs{<\nabla\omega,\nabla u>} \underset{\substack{\text{Cauchy-}\\\text{Schwarz}}}{\leq} \norm{\nabla\omega}\cdot\norm{\nabla u} = \norm{\omega}_V\cdot\norm{u}_V \implies a \text{ continuous}\\
-    &a(u,u) = \int_{\Omega} (\nabla u)^2 \, d\Omega = \norm{u}_V^2. \text{ In particular } a(u,u) \geq \norm{u}_V^2 \implies a \text{ coercive}
-\end{align*}
+% \begin{align*}
+%     &\abs{a(\omega, u)} = \abs{\int_{\Omega}\nabla \omega \nabla u \, d\Omega} = \abs{<\nabla\omega,\nabla u>} \underset{\substack{\text{Cauchy-}\\\text{Schwarz}}}{\leq} \norm{\nabla\omega}\cdot\norm{\nabla u} = \norm{\omega}_V\cdot\norm{u}_V \implies a \text{ continuous}\\
+%     &a(u,u) = \int_{\Omega} (\nabla u)^2 \, d\Omega = \norm{u}_V^2. \text{ In particular } a(u,u) \geq \norm{u}_V^2 \implies a \text{ coercive}
+% \end{align*}
   
-\end{example}
+% \end{example}
 
 
 \begin{lemma}[Céa]\-\\
