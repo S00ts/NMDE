@@ -1,8 +1,6 @@
-\section{Partial Differential Equations. Generalities on their solution}
+\section{Partial Differential Equations. Finite difference method}
 
-\subsection{Finite differences}
-
-\begin{example}[(1D Heat equation)]
+\begin{example}[(1D Heat equation)]\label{example4.0.1}
   \-\\Our problem is:
   \[
     \begin{cases}
@@ -137,7 +135,7 @@ We discretize $x$ and $t$:
 
 \newpage
 
-\subsubsection{Numerical derivatives}
+\subsection{Numerical derivatives}
 
 \definecolor{qqwwzz}{rgb}{0.,0.4,0.6}
 
@@ -272,7 +270,7 @@ $t^n = n\Delta t \, n\geq0$\\
 
 We have the following explicit method:
 
-\subsubsection{Forward Time Centered Space method (FTCS)}
+\subsection{Forward Time Centered Space method (FTCS)}
 
 \begin{itemize}
     \item Approximate $u_t$ using forward differences (FT)
@@ -324,4 +322,147 @@ $$
 
 \newpage
 
-$\ldots$
+\begin{example}
+  Suppose we have the following problem
+  $$
+  \begin{cases}
+    u_t-\alpha u_{xx} = f \qquad x\in (a,b),\, t>0\\
+    u(x,0) = u_0(x)\\
+    \begin{rcases}
+        u_x(a,t)=0\\
+        u_x(b,t)=0
+    \end{rcases}\,\text{Neumann boundary conditions}
+  \end{cases}
+  $$
+  Now, $r:=\alpha\dfrac{\Delta t}{\Delta x^2}$ and our discretized problem is
+  
+  \[
+    U_i^{n+1} = rU_{i-1}^n + (1-2r)U_i^n + rU_{i+1}^n \qquad i = 0,\ldots,N
+  \]
+  
+  But for $i=0$ we have the term $rU_{-1}^n$ and $x_{-1}$ is located outside the domain! Could it be rewritten as something inside the domain?\\
+  
+  We can use the Neumann boundary conditions together with centered differences:
+  
+  $$
+  \begin{rcases}
+    \dfrac{du}{dx}\Big|_0 = g\\[10pt]
+    \dfrac{du}{dx} \simeq \dfrac{u_1 - u_{-1}}{2h}
+  \end{rcases}\implies u_{-1} = u_1 - 2hg
+  $$
+  
+  in our case, $g=0$ so
+  
+  \[
+    U_0^{n+1} = (1-2r)U_0^n + 2rU_1^n + \cancelto{0}{(-2rhg)}
+  \]
+  
+\end{example}
+
+\begin{remark}
+  We have the same situation for $i = N$ and it's solved similarly.
+\end{remark}
+
+
+\subsection{$\theta$-methods}
+
+Now we'll proceed to deduce the $\theta$-methods, which are obtained by approximating the time derivative at $t^{n+\theta}$. We will work with the problem in example \ref{example4.0.1}.\\
+
+We expand around $t+\theta\Delta t$
+\begin{align*}
+    &f^n = f(t^n) = f(t^n+\theta\Delta t) - \theta\Delta tf'(t^n+\theta \Delta t) + (\theta\Delta t)^2 f''(t^n + \theta\Delta t) + \mathcal{O}(\Delta t^3)\\
+    &f^{n+1} = f(t^n+\Delta t) = f(t^n + \theta\Delta t) + (1-\theta)\Delta t f'(t^n + \theta\Delta t) + (1-\theta)^2\Delta t^2 f''(t^n + \theta\Delta t) + \mathcal{O}(\Delta t^3)
+\end{align*}
+and subtracting, we obtain
+\begin{align*}
+    f^{n+1} - f^n = \Delta tf'(t^n + \theta\Delta t) + (\Delta t^2 - 2\theta\Delta t^2)f''(t^n + \theta\Delta t) + \mathcal{O}(\Delta t^3)\\
+    \frac{f^{n+1} - f^n}{\Delta t} = f'(t^n + \theta\Delta t) + \Delta t (1 - 2\theta)f''(t^n + \theta\Delta t) + \mathcal{O}(\Delta t^2)
+\end{align*}
+
+\begin{remark}
+  This is second order if $\theta = \frac{1}{2}$. First order otherwise.
+\end{remark}
+
+So
+
+\[
+  \frac{\partial f}{\partial t}\Bigg|_i^{n+\theta} = \frac{f^{n+1} - f^n}{\Delta t} + \tau
+\]
+
+where $\tau = \begin{cases}
+  \mathcal{O}(\Delta t^2) &\,\text{ if } \theta = \frac{1}{2}\\
+  \mathcal{O}(\Delta t) & \text{otherwise}
+\end{cases}$\\
+
+Similarly, adding (and using the previous result), we obtain
+
+\[
+   f^{n+\theta} = \theta f^{n+1} + (1-\theta)f^n + \mathcal{O}(\Delta t^2)
+\]
+
+We can't use function values that are not in positions $n$ or $n+1$, which are the only one we know. That's why we rewrite the values at $n+\theta$ as values at $n$ and $n+1$.\\
+
+With that, we end up with
+
+\[
+  u_t(x_i,t^{n+\theta}) = \frac{u(x_i,t^{n+1}) - u(x_i,t^n)}{\Delta t} + \tau
+\]
+
+\begin{align*}
+  u_{xx}(x_i,t^{n+\theta}) &= \theta u_{xx}(x_i,t^{n+1}) + (1-\theta)u_{xx}(x_i,t^n) + \mathcal{O}(\Delta t^2) \underset{\substack{\text{approx. 2nd}\\\text{order deriv.}}}{=}\\
+  &= \theta \frac{u_{i+1}^{n+1} - 2u_i^{n+1} + u_{i-1}^{n+1}}{\Delta x^2} + (1-\theta)\frac{u_{i-1}^n - 2u_i^n + u_{i+1}^n}{\Delta x^2} + \mathcal{O}(\Delta x^2) + \mathcal{O}(\Delta t^2)
+\end{align*}
+
+So, the numerical problem we have to solve is (in matrix form)
+
+\[
+  \subTilde{A}\Bar{U}^{n+1} = \subTilde{B}\Bar{U}^n + \Bar{F} + \Bar{G}
+\]
+
+where
+
+\[
+  \Bar{U}^n = \left( U_1^n, U_2^n, \ldots, U_{N-1}^n \right)
+\]
+
+\[
+  \subTilde{A} = \begin{pmatrix}
+    \scriptstyle{\small 1+2r\theta} & -r\theta              \\
+    -r\theta   & \scriptstyle{\small 1+2r\theta} & -r\theta \\
+    &\ddots     & \ddots     & \ddots
+  \end{pmatrix} \qquad \subTilde{B} = \begin{pmatrix}
+    \scriptstyle{\small 1-2r(1-\theta)} & \scriptstyle{\small r(1-\theta)}            \\
+    \scriptstyle{\small r(1-\theta)}   & \scriptstyle{\small 1-2r(1-\theta)} & \scriptstyle{\small r(1-\theta)} \\
+    \hspace{1.7cm}\ddots  & \hspace{1.9cm} \ddots     & \hspace{1.7cm} \ddots
+  \end{pmatrix}
+\]
+
+\[
+  \Bar{G} = r\begin{pmatrix}
+    \theta u_a^{n+1} + (1-\theta)u_a^n\\[3pt]
+    0\\[3pt]
+    \vdots\\[3pt]
+    0\\[3pt]
+    \theta u_b^{n+1} + (1-\theta)u_b^n
+  \end{pmatrix} \qquad \Bar{F}=\Delta t\begin{pmatrix}
+    \theta f_1^{n+1} + (1-\theta)f_1^n\\[3pt]
+    \theta f_2^{n+1} + (1-\theta)f_2^n\\[3pt]
+    \theta f_3^{n+1} + (1-\theta)f_3^n\\[3pt]
+    \theta f_4^{n+1} + (1-\theta)f_4^n\\[3pt]
+    \vdots
+  \end{pmatrix}
+\]
+\-\\
+\begin{remark}\-
+  \begin{itemize}
+      \item If $\theta = 0$ we recover the \textbf{explicit method} (FTCS).
+      \item If $\theta = 1$ we have the \textbf{implicit method} (Backward Time Centered Space - BTCS).
+      \item If $\theta = \frac{1}{2}$ we obtain the \textbf{Crank-Nicolson method}.
+  \end{itemize}
+  \-\\
+  Implicit and Crank-Nicolson methods are always stable regardless of $\Delta t$, but a system of equations has to be solved at each step.
+\end{remark}
+
+\begin{definition}
+  
+\end{definition}
